@@ -15,19 +15,8 @@
 
 using namespace std;
 
-// Main Game Window
-void gameMainMenu(sf::RenderWindow& window);
-void debugMenu(sf::RenderWindow& window);
-void testMenu(sf::RenderWindow& window);
-
 // Global Variables
-string version = "0.1.2";   // Current version number
-
-int main() {
-	sf::RenderWindow window(sf::VideoMode(800, 600), "Character Manager v" + version, sf::Style::Close);
-    mainMenu(window);
-    return 0;
-}
+string version = "0.1.3";   // Current version number
 
 void mainMenu(sf::RenderWindow& window) {
     Menu newMenu(400, 400, 200, 600, { "Character Maker", "Bond Manager", "Exit" });
@@ -53,7 +42,8 @@ void mainMenu(sf::RenderWindow& window) {
             if (event.type == sf::Event::MouseButtonPressed)
                 switch (hoverVal) {
                 case 0:
-                    charGenMainMenu(window);
+                    //charGenMainMenu(window);
+                    charGen::mainMenu(window);
                     break;
                 case 1:
                     bonds::MainMenu(window);
@@ -72,4 +62,10 @@ void mainMenu(sf::RenderWindow& window) {
         
         window.display();
     }
+}
+
+int main() {
+    sf::RenderWindow window(sf::VideoMode(800, 600), "Character Manager v" + version, sf::Style::Close);
+    mainMenu(window);
+    return 0;
 }
