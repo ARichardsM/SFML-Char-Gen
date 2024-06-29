@@ -24,13 +24,14 @@ bool Button::hover(sf::RenderWindow& window) {
 	sf::Vector2<int> mousePos;
 	mousePos = sf::Mouse::getPosition(window);
 	sf::FloatRect border = box.getGlobalBounds();
+	
+	return hover(mousePos);
+}
 
-	sf::Vector2f point;
+bool Button::hover(sf::Vector2i& mousePt) {
+	sf::FloatRect border = box.getGlobalBounds();
 
-	point.x = mousePos.x;
-	point.y = mousePos.y;
-
-	if (border.contains(point)) {
+	if (border.contains(static_cast<sf::Vector2f>(mousePt))) {
 		box.setOutlineThickness(5);
 		return true;
 	}
@@ -75,11 +76,11 @@ Menu::Menu(int x, int y, int height, float width, std::vector<std::string> optio
 	}
 }
 
-int Menu::hover(sf::RenderWindow& window) {
+int Menu::hover(sf::Vector2i& mousePt) {
 	int returnVal = -1;
 
 	for (int i = 0; i < Buttons.size(); i++) {
-		if (Buttons[i].hover(window))
+		if (Buttons[i].hover(mousePt))
 			returnVal = i;
 	}
 

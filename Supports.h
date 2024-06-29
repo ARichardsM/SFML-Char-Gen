@@ -19,6 +19,8 @@ public:
 	Button(sf::Vector2f size);
 
 	bool hover(sf::RenderWindow& window);
+	// Determines If The Mouse Is Hovering This Button
+	bool hover(sf::Vector2i& mousePt);
 	void setString(std::string textString);
 	void setPosition(float x, float y);
 	void setFont(sf::Font& font);
@@ -28,15 +30,15 @@ public:
 class Menu {
 public:
 	std::vector<Button> Buttons;
-
 	std::vector<std::string> Options;
-
 	sf::Font TxtFont;
 
 	// Initializer
 	Menu(int x, int y, int height, float width, std::vector<std::string> options);
 
-	int hover(sf::RenderWindow& window);
+	// Determines If The Mouse Is Hovering Any Element In The Menu
+	int hover(sf::Vector2i& mousePt);
+	// Handles Drawing All Parts of the Menu
 	void draw(sf::RenderWindow& window);
 };
 

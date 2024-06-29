@@ -16,9 +16,10 @@
 using namespace std;
 
 // Global Variables
-string version = "0.1.3";   // Current version number
+string version = "0.1.4";   // Current version number
 
 void mainMenu(sf::RenderWindow& window) {
+    sf::Vector2<int> mousePos;
     Menu newMenu(400, 400, 200, 600, { "Character Maker", "Bond Manager", "Exit" });
 
     sf::Font font;
@@ -32,8 +33,10 @@ void mainMenu(sf::RenderWindow& window) {
 
     while (window.isOpen())
     {
+        mousePos = sf::Mouse::getPosition(window);
+
         sf::Event event;
-        int hoverVal = newMenu.hover(window);
+        int hoverVal = newMenu.hover(mousePos);
 
         while (window.pollEvent(event)) {
             if (event.type == sf::Event::Closed)
@@ -42,7 +45,6 @@ void mainMenu(sf::RenderWindow& window) {
             if (event.type == sf::Event::MouseButtonPressed)
                 switch (hoverVal) {
                 case 0:
-                    //charGenMainMenu(window);
                     charGen::mainMenu(window);
                     break;
                 case 1:
