@@ -14,5 +14,3 @@ bondsIn.txt
 stats.txt
 BondTracker.cpp
 BondTracker.h
-CharacterGenerator.cpp
-CharacterGenerator.h

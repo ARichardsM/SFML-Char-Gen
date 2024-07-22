@@ -18,7 +18,6 @@ public:
 	// Initializer
 	Button(sf::Vector2f size);
 
-	bool hover(sf::RenderWindow& window);
 	// Determines If The Mouse Is Hovering This Button
 	bool hover(sf::Vector2i& mousePt);
 	void setString(std::string textString);
@@ -43,3 +42,8 @@ public:
 };
 
 
+// GUI Selection Window
+class selectScreen {
+public:
+	int w() { return 10; };
+};

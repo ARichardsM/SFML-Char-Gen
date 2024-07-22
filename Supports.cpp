@@ -20,14 +20,6 @@ Button::Button(sf::Vector2f size) {
 	box.setOrigin(temp.left + temp.width / 2.0f, temp.top);
 }
 
-bool Button::hover(sf::RenderWindow& window) {
-	sf::Vector2<int> mousePos;
-	mousePos = sf::Mouse::getPosition(window);
-	sf::FloatRect border = box.getGlobalBounds();
-	
-	return hover(mousePos);
-}
-
 bool Button::hover(sf::Vector2i& mousePt) {
 	sf::FloatRect border = box.getGlobalBounds();
 
