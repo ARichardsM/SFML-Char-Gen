@@ -45,5 +45,27 @@ public:
 // GUI Selection Window
 class selectScreen {
 public:
-	int w() { return 10; };
+	struct {
+		sf::Text title;
+		sf::Text name;
+		std::vector<sf::Text> bodyArray;
+		sf::Texture image;
+		sf::Sprite imageSpr;
+	} display;
+	std::string title;
+	std::vector<std::string> options;
+	sf::Font TxtFont;
+	int optSel;
+
+	// Initializer
+	selectScreen(std::string topText, std::vector<std::string> optText);
+
+	// Change Title and Options
+	void swapData(std::string topText, std::vector<std::string> optText);
+
+	// Go To Another Option
+	void swapOptions();
+
+	// Handles Drawing All Parts of the Screen
+	void draw(sf::RenderWindow& window);
 };

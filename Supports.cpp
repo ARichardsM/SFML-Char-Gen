@@ -85,3 +85,72 @@ void Menu::draw(sf::RenderWindow& window) {
 		window.draw(button.text);
 	}
 }
+
+selectScreen::selectScreen(std::string topText, std::vector<std::string> optText) {
+	TxtFont.loadFromFile("font/arial.ttf");
+	options = optText;
+	optSel = 0;
+
+	display.title.setCharacterSize(42);
+	display.title.setFont(TxtFont);
+	display.title.setFillColor(sf::Color::Cyan);
+	display.title.setString(topText);
+	sf::FloatRect temp = display.title.getLocalBounds();
+	display.title.setOrigin(temp.left + temp.width / 2.0f, 0);
+	display.title.setPosition(400.f, 0.f);
+
+	display.name.setFont(TxtFont);
+	display.name.setFillColor(sf::Color::Cyan);
+	display.name.setString(options[optSel]);
+	temp = display.name.getLocalBounds();
+	display.name.setOrigin(temp.left + temp.width / 2.0f, 0);
+	display.name.setPosition(400.f, 50.f);
+
+	//name.setFont(font);
+	//name.setFillColor(sf::Color::Cyan);
+
+	return;
+}
+
+void selectScreen::swapOptions() {
+	//display.title.setString(topText);
+
+	if (optSel < options.size() - 1) {
+		optSel++;
+	}
+	else {
+		optSel = 0;
+	}
+
+	
+
+	display.name.setString(options[optSel]);
+	sf::FloatRect temp = display.name.getLocalBounds();
+	display.name.setOrigin(temp.left + temp.width / 2.0f, 0);
+
+	//display.title.setPosition(400.f, 0.f);
+	return;
+}
+
+void selectScreen::swapData(std::string topText, std::vector<std::string> optText) {
+	options = optText;
+	optSel = 0;
+
+	display.title.setString(topText);
+
+	sf::FloatRect temp = display.title.getLocalBounds();
+	display.title.setOrigin(temp.left + temp.width / 2.0f, 0);
+
+	display.name.setString(options[optSel]);
+	temp = display.name.getLocalBounds();
+	display.name.setOrigin(temp.left + temp.width / 2.0f, 0);
+
+	//display.title.setPosition(400.f, 0.f);
+	return;
+}
+
+void selectScreen::draw(sf::RenderWindow& window) {
+	window.draw(display.title);
+	window.draw(display.name);
+	return;
+}

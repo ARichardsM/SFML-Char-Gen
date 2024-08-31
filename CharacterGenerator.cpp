@@ -1169,8 +1169,23 @@ void charGen::backgroundMenu(sf::RenderWindow& window, string(&text)[5]) {
     sf::Sprite imageSpr;
     int currentCate;
     Menu newMenu(400, 400, 200, 600, { "Change", "Next", "Back" });
+    selectScreen newScreen("Nation", { "Skelstaris", "Blaycorrum", "Arim", "Native" });
     vector<sf::Text> bodyArray;
-    sf::Text title, name;
+    sf::Text name;
+    std::vector<std::vector<string>> cates;
+
+    cates.push_back({ "Skelstaris", "Blaycorrum", "Arim", "Native" });
+    cates.push_back({ "Human", "Halfling", "Goliath" });
+    cates.push_back({ "Fire", "Water", "Earth", "Wind", "Ice", "Lightning", "Shadow", "Light" });
+    cates.push_back({ "Faith", "Magic", "Tech", "Instinct" });
+    cates.push_back({ "Mythos", "Death", "Nature", "Deception", "Fate", "Conquest", "Wilds", "Security", "Desire", "Spring", "Summer", "Fall", "Winter", "Progression", "Monsters" });
+
+    //string cate0[] = { "Skelstaris", "Blaycorrum", "Arim", "Native" };
+    //string cate1[] = { "Human", "Halfling", "Goliath" };
+    //string cate2[] = { "Fire", "Water", "Earth", "Wind", "Ice", "Lightning", "Shadow", "Light" };
+    //string cate3[] = { "Faith", "Magic", "Tech", "Instinct" };
+    //string cate4[] = { "Mythos", "Death", "Nature", "Deception", "Fate", "Conquest", "Wilds", "Security", "Desire", "Spring", "Summer", "Fall", "Winter", "Progression", "Monsters" };
+
 
     string categories[] = { "Nation", "Race", "Element", "Source", "Religion" };
     sf::FloatRect imageBor = imageSpr.getGlobalBounds();
@@ -1180,22 +1195,14 @@ void charGen::backgroundMenu(sf::RenderWindow& window, string(&text)[5]) {
 
     font.loadFromFile("font/arial.ttf");
 
-    title.setCharacterSize(37);
-    title.setFont(font);
     name.setFont(font);
-    title.setFillColor(sf::Color::Cyan);
     name.setFillColor(sf::Color::Cyan);
-    title.setPosition(140.f, 0.f);
 
     currentCate = 0;
 
     while (window.isOpen())
     {
         mousePos = sf::Mouse::getPosition(window);
-        int mouseX = mousePos.x;
-        int mouseY = mousePos.y;
-
-        title.setString(categories[currentCate]);
 
         sf::Event event;
         int hoverVal = newMenu.hover(mousePos);
@@ -1209,15 +1216,28 @@ void charGen::backgroundMenu(sf::RenderWindow& window, string(&text)[5]) {
             if (event.type == sf::Event::MouseButtonPressed) {
                 switch (hoverVal) {
                 case 0:
+                    newScreen.swapOptions();
                     swapOption(currentCate, text[currentCate]);
                     break;
                 case 1:
                     currentCate += 1;
+                    if (currentCate <= 4) {
+                        newScreen.swapData(categories[currentCate], cates[currentCate]);
+                    }
                     break;
                 case 2:
                     currentCate -= 1;
+                    if (currentCate >= 0) {
+                        newScreen.swapData(categories[currentCate], cates[currentCate]);
+                    }
                     break;
                 }
+
+                /*
+                if (currentCate <= 4 && currentCate >= 0) {
+                    newScreen.swapData(categories[currentCate], cates[currentCate]);
+                }
+                */
             }
 
             if (currentCate > 4 || currentCate < 0) {
@@ -1243,16 +1263,10 @@ void charGen::backgroundMenu(sf::RenderWindow& window, string(&text)[5]) {
             window.draw(bodyArray[i]);
         }
 
-        window.draw(title);
         window.draw(name);
         window.draw(imageSpr);
         newMenu.draw(window);
-        /*
-        for (int i = 0; i < 3; i++) {
-            window.draw(buttonBlock[i]);
-            window.draw(buttonText[i]);
-        }
-        */
+        newScreen.draw(window);
         window.display();
     }
 }
