@@ -52,6 +52,7 @@ public:
 		sf::Texture image;
 		sf::Sprite imageSpr;
 	} display;
+
 	std::string title;
 	std::vector<std::string> options;
 	sf::Font TxtFont;
@@ -65,6 +66,9 @@ public:
 
 	// Go To Another Option
 	void swapOptions();
+
+	// Update the display with the current selections
+	void updateDisplay();
 
 	// Handles Drawing All Parts of the Screen
 	void draw(sf::RenderWindow& window);

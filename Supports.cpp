@@ -88,6 +88,7 @@ void Menu::draw(sf::RenderWindow& window) {
 
 selectScreen::selectScreen(std::string topText, std::vector<std::string> optText) {
 	TxtFont.loadFromFile("font/arial.ttf");
+	title = topText;
 	options = optText;
 	optSel = 0;
 
@@ -106,10 +107,24 @@ selectScreen::selectScreen(std::string topText, std::vector<std::string> optText
 	display.name.setOrigin(temp.left + temp.width / 2.0f, 0);
 	display.name.setPosition(400.f, 50.f);
 
+	updateDisplay();
+
 	//name.setFont(font);
 	//name.setFillColor(sf::Color::Cyan);
 
 	return;
+}
+
+void selectScreen::updateDisplay() {
+	// Update the title
+	display.title.setString(title);
+	sf::FloatRect temp = display.title.getLocalBounds();
+	display.title.setOrigin(temp.left + temp.width / 2.0f, 0);
+
+	// Update the option name
+	display.name.setString(options[optSel]);
+	temp = display.name.getLocalBounds();
+	display.name.setOrigin(temp.left + temp.width / 2.0f, 0);
 }
 
 void selectScreen::swapOptions() {
@@ -122,30 +137,16 @@ void selectScreen::swapOptions() {
 		optSel = 0;
 	}
 
-	
-
-	display.name.setString(options[optSel]);
-	sf::FloatRect temp = display.name.getLocalBounds();
-	display.name.setOrigin(temp.left + temp.width / 2.0f, 0);
-
-	//display.title.setPosition(400.f, 0.f);
+	updateDisplay();
 	return;
 }
 
 void selectScreen::swapData(std::string topText, std::vector<std::string> optText) {
+	title = topText;
 	options = optText;
 	optSel = 0;
 
-	display.title.setString(topText);
-
-	sf::FloatRect temp = display.title.getLocalBounds();
-	display.title.setOrigin(temp.left + temp.width / 2.0f, 0);
-
-	display.name.setString(options[optSel]);
-	temp = display.name.getLocalBounds();
-	display.name.setOrigin(temp.left + temp.width / 2.0f, 0);
-
-	//display.title.setPosition(400.f, 0.f);
+	updateDisplay();
 	return;
 }
 
