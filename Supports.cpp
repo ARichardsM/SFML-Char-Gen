@@ -125,6 +125,10 @@ void selectScreen::updateDisplay() {
 	display.name.setString(options[optSel]);
 	temp = display.name.getLocalBounds();
 	display.name.setOrigin(temp.left + temp.width / 2.0f, 0);
+
+	std::filesystem::path imagePath = std::filesystem::current_path() / "Resources" / (title + "_" + options[optSel] + ".png");
+	std::cout << (title + "_" + options[optSel] + ".png") << "\t";
+	std::cout << exists(imagePath) << "\n";
 }
 
 void selectScreen::swapOptions() {
