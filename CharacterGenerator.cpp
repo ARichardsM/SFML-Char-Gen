@@ -1180,13 +1180,6 @@ void charGen::backgroundMenu(sf::RenderWindow& window, string(&text)[5]) {
     cates.push_back({ "Faith", "Magic", "Tech", "Instinct" });
     cates.push_back({ "Mythos", "Death", "Nature", "Deception", "Fate", "Conquest", "Wilds", "Security", "Desire", "Spring", "Summer", "Fall", "Winter", "Progression", "Monsters" });
 
-    //string cate0[] = { "Skelstaris", "Blaycorrum", "Arim", "Native" };
-    //string cate1[] = { "Human", "Halfling", "Goliath" };
-    //string cate2[] = { "Fire", "Water", "Earth", "Wind", "Ice", "Lightning", "Shadow", "Light" };
-    //string cate3[] = { "Faith", "Magic", "Tech", "Instinct" };
-    //string cate4[] = { "Mythos", "Death", "Nature", "Deception", "Fate", "Conquest", "Wilds", "Security", "Desire", "Spring", "Summer", "Fall", "Winter", "Progression", "Monsters" };
-
-
     string categories[] = { "Nation", "Race", "Element", "Source", "Religion" };
     sf::FloatRect imageBor = imageSpr.getGlobalBounds();
 

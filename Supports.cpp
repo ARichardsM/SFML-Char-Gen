@@ -107,6 +107,9 @@ selectScreen::selectScreen(std::string topText, std::vector<std::string> optText
 	display.name.setOrigin(temp.left + temp.width / 2.0f, 0);
 	display.name.setPosition(400.f, 50.f);
 
+	display.imageSpr.setScale(sf::Vector2f(0.3f, 0.3f));
+	display.imageSpr.setPosition(400.f, 100.f);
+
 	updateDisplay();
 
 	//name.setFont(font);
@@ -126,9 +129,19 @@ void selectScreen::updateDisplay() {
 	temp = display.name.getLocalBounds();
 	display.name.setOrigin(temp.left + temp.width / 2.0f, 0);
 
+	// Update the image
 	std::filesystem::path imagePath = std::filesystem::current_path() / "Resources" / (title + "_" + options[optSel] + ".png");
-	std::cout << (title + "_" + options[optSel] + ".png") << "\t";
-	std::cout << exists(imagePath) << "\n";
+	if (exists(imagePath)) {
+		display.image.loadFromFile(imagePath.string());
+		display.imageSpr.setTexture(display.image);
+		temp = display.imageSpr.getLocalBounds();
+		display.imageSpr.setOrigin(sf::Vector2f(temp.left + temp.width / 2, 0));
+		imageBool = true;
+	}
+	else {
+		imageBool = false;
+	}
+	
 }
 
 void selectScreen::swapOptions() {
@@ -157,5 +170,8 @@ void selectScreen::swapData(std::string topText, std::vector<std::string> optTex
 void selectScreen::draw(sf::RenderWindow& window) {
 	window.draw(display.title);
 	window.draw(display.name);
+	if (imageBool)
+		window.draw(display.imageSpr);
+
 	return;
 }
