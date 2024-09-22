@@ -1257,7 +1257,7 @@ void charGen::backgroundMenu(sf::RenderWindow& window, string(&text)[5]) {
         }
 
         window.draw(name);
-        window.draw(imageSpr);
+        //window.draw(imageSpr);
         newMenu.draw(window);
         newScreen.draw(window);
         window.display();

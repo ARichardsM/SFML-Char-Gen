@@ -130,10 +130,10 @@ void selectScreen::updateDisplay() {
 	display.name.setOrigin(temp.left + temp.width / 2.0f, 0);
 
 	// Update the image
-	std::filesystem::path imagePath = std::filesystem::current_path() / "Resources" / (title + "_" + options[optSel] + ".png");
+	std::filesystem::path imagePath = std::filesystem::current_path() / title / (options[optSel] + ".png");
 	if (exists(imagePath)) {
 		display.image.loadFromFile(imagePath.string());
-		display.imageSpr.setTexture(display.image);
+		display.imageSpr.setTexture(display.image, true);
 		temp = display.imageSpr.getLocalBounds();
 		display.imageSpr.setOrigin(sf::Vector2f(temp.left + temp.width / 2, 0));
 		imageBool = true;
