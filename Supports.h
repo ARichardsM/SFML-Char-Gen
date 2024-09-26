@@ -58,7 +58,7 @@ public:
 	std::vector<std::string> options;
 	sf::Font TxtFont;
 	int optSel;
-	bool imageBool;
+	bool imageBool, txtBool;
 
 	// Initializer
 	selectScreen(std::string topText, std::vector<std::string> optText);

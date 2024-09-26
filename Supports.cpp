@@ -141,6 +141,32 @@ void selectScreen::updateDisplay() {
 	else {
 		imageBool = false;
 	}
+
+	// Update the body text
+	std::filesystem::path txtPath = std::filesystem::current_path() / title / (options[optSel] + ".txt");
+	if (exists(txtPath)) {
+		ifstream fileIn;
+		string line;
+		fileIn.open(txtPath);
+
+		int i = 0;
+		display.bodyArray.clear();
+		while (getline(fileIn, line)) {
+			display.bodyArray.push_back(sf::Text());
+			display.bodyArray[display.bodyArray.size() - 1].setString(line);
+			display.bodyArray[display.bodyArray.size() - 1].setCharacterSize(24);
+			display.bodyArray[display.bodyArray.size() - 1].setFont(TxtFont);
+			display.bodyArray[display.bodyArray.size() - 1].setFillColor(sf::Color::Cyan);
+			temp = display.bodyArray[display.bodyArray.size() - 1].getLocalBounds();
+			display.bodyArray[display.bodyArray.size() - 1].setOrigin(temp.left + temp.width / 2.0f, 0);
+			display.bodyArray[display.bodyArray.size() - 1].setPosition(400.f, 275.f + (25.f * i));
+			i++;
+		}
+		txtBool = true;
+	}
+	else {
+		txtBool = false;
+	}
 	
 }
 
@@ -172,6 +198,10 @@ void selectScreen::draw(sf::RenderWindow& window) {
 	window.draw(display.name);
 	if (imageBool)
 		window.draw(display.imageSpr);
+
+	if (txtBool)
+		for (int i = 0; i < display.bodyArray.size(); i++)
+			window.draw(display.bodyArray[i]);
 
 	return;
 }
