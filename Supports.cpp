@@ -196,6 +196,7 @@ void selectScreen::swapData(std::string topText, std::vector<std::string> optTex
 void selectScreen::draw(sf::RenderWindow& window) {
 	window.draw(display.title);
 	window.draw(display.name);
+
 	if (imageBool)
 		window.draw(display.imageSpr);
 

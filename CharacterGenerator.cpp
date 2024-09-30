@@ -1164,14 +1164,9 @@ void charGen::mainMenu(sf::RenderWindow& window) {
 
 void charGen::backgroundMenu(sf::RenderWindow& window, string(&text)[5]) {
     sf::Vector2<int> mousePos;
-    sf::Font font;
-    sf::Texture image;
-    sf::Sprite imageSpr;
     int currentCate;
     Menu newMenu(400, 400, 200, 600, { "Change", "Next", "Back" });
     selectScreen newScreen("Nation", { "Skelstaris", "Blaycorrum", "Arim", "Native" });
-    vector<sf::Text> bodyArray;
-    sf::Text name;
     std::vector<std::vector<string>> cates;
 
     cates.push_back({ "Skelstaris", "Blaycorrum", "Arim", "Native" });
@@ -1181,15 +1176,6 @@ void charGen::backgroundMenu(sf::RenderWindow& window, string(&text)[5]) {
     cates.push_back({ "Mythos", "Death", "Nature", "Deception", "Fate", "Conquest", "Wilds", "Security", "Desire", "Spring", "Summer", "Fall", "Winter", "Progression", "Monsters" });
 
     string categories[] = { "Nation", "Race", "Element", "Source", "Religion" };
-    sf::FloatRect imageBor = imageSpr.getGlobalBounds();
-
-    image.loadFromFile("nation/Skelstaris.png");
-    imageSpr.setTexture(image);
-
-    font.loadFromFile("font/arial.ttf");
-
-    name.setFont(font);
-    name.setFillColor(sf::Color::Cyan);
 
     currentCate = 0;
 
@@ -1225,12 +1211,6 @@ void charGen::backgroundMenu(sf::RenderWindow& window, string(&text)[5]) {
                     }
                     break;
                 }
-
-                /*
-                if (currentCate <= 4 && currentCate >= 0) {
-                    newScreen.swapData(categories[currentCate], cates[currentCate]);
-                }
-                */
             }
 
             if (currentCate > 4 || currentCate < 0) {
@@ -1239,27 +1219,14 @@ void charGen::backgroundMenu(sf::RenderWindow& window, string(&text)[5]) {
             }
         }
 
-        // Modify the details for the current selection
-        swapImage(currentCate, text[currentCate], image, imageSpr, name, bodyArray);
-
-        for (int i = 0; i < bodyArray.size(); i++) {
-            bodyArray[i].setFont(font);
-            bodyArray[i].setFillColor(sf::Color::Cyan);
-        }
-
-        organize(imageSpr, name, bodyArray);
-
         // Draw the window
         window.clear();
-
-        for (int i = 0; i < bodyArray.size(); i++) {
-            window.draw(bodyArray[i]);
-        }
-
-        window.draw(name);
-        //window.draw(imageSpr);
         newMenu.draw(window);
         newScreen.draw(window);
         window.display();
     }
+}
+
+std::vector<std::string> charGen::backgroundMenu2(sf::RenderWindow& window, std::vector<std::string> cates, std::vector<std::vector<std::string>> cateOpts) {
+    return {};
 }
