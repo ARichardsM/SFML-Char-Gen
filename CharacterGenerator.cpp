@@ -1176,6 +1176,15 @@ void charGen::backgroundMenu(sf::RenderWindow& window, string(&text)[5]) {
     cates.push_back({ "Mythos", "Death", "Nature", "Deception", "Fate", "Conquest", "Wilds", "Security", "Desire", "Spring", "Summer", "Fall", "Winter", "Progression", "Monsters" });
 
     string categories[] = { "Nation", "Race", "Element", "Source", "Religion" };
+    std::vector<string> categorie;
+
+    charGen::backgroundMenu2(window, categorie, cates);
+    categorie = { "Nation", "Race", "Element" };
+    charGen::backgroundMenu2(window, categorie, cates);
+    categorie = { "Nation", "Race", "Element", "Source", "Religion" };
+    std::vector<string> categori = charGen::backgroundMenu2(window, categorie, cates);
+    for (string txt : categori)
+        cout << txt << "\n";
 
     currentCate = 0;
 
@@ -1227,6 +1236,75 @@ void charGen::backgroundMenu(sf::RenderWindow& window, string(&text)[5]) {
     }
 }
 
+// TBD: Update returnVal, Comments
 std::vector<std::string> charGen::backgroundMenu2(sf::RenderWindow& window, std::vector<std::string> cates, std::vector<std::vector<std::string>> cateOpts) {
-    return {};
+    // Validate Categories Have Values
+    if (cates.size() == 0) {
+        cout << "No Categories Found\n";
+        return {};
+    }
+
+    // Validate Categories And Category Options Match
+    if (cates.size() != cateOpts.size()) {
+        cout << "Categories And Category Options Mismatch\n";
+        return {};
+    }
+    
+    // Initialize Variables
+    Menu newMenu(400, 400, 200, 600, { "Change", "Next", "Back" });
+    selectScreen newScreen(cates[0], cateOpts[0]);
+    sf::Vector2<int> mousePos;
+    int cateCurr = 0, cateSize = cates.size(), hoverVal;
+    sf::Event event;
+
+    // Initialize returnVal to The First Category Option
+    std::vector<string> returnVal;
+    for (std::vector<std::string> optsPoss : cateOpts)
+        returnVal.push_back(optsPoss[0]);
+    
+    while (window.isOpen())
+    {
+        mousePos = sf::Mouse::getPosition(window);
+        hoverVal = newMenu.hover(mousePos);
+
+        while (window.pollEvent(event))
+        {
+            if (event.type == sf::Event::Closed)
+                window.close();
+
+            if (event.type == sf::Event::MouseButtonPressed) {
+                switch (hoverVal) {
+                case 0:
+                    newScreen.swapOptions();
+                    break;
+                case 1:
+                    cateCurr++;
+                    if (cateCurr < cateSize) {
+                        newScreen.swapData(cates[cateCurr], cateOpts[cateCurr]);
+                    }
+                    break;
+                case 2:
+                    cateCurr--;
+                    if (cateCurr >= 0) {
+                        newScreen.swapData(cates[cateCurr], cateOpts[cateCurr]);
+                    }
+                    break;
+                }
+            }
+
+            
+        }
+
+        if (cateCurr >= cateSize || cateCurr < 0) {
+            break;
+        }
+
+        // Draw the window
+        window.clear();
+        newMenu.draw(window);
+        newScreen.draw(window);
+        window.display();
+    }
+    
+    return returnVal;
 }
