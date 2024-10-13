@@ -1108,6 +1108,17 @@ void charGen::mainMenu(sf::RenderWindow& window) {
     vector<vector<string>> abilityList;
     vector<vector<string>> weaknessList;
 
+    std::vector<string> backCate = { "Nation", "Race", "Element", "Source", "Religion" };
+    std::vector<std::vector<string>> backCateOpt;
+
+    backCateOpt.push_back({ "Skelstaris", "Blaycorrum", "Arim", "Native" });
+    backCateOpt.push_back({ "Human", "Halfling", "Goliath" });
+    backCateOpt.push_back({ "Fire", "Water", "Earth", "Wind", "Ice", "Lightning", "Shadow", "Light" });
+    backCateOpt.push_back({ "Faith", "Magic", "Tech", "Instinct" });
+    backCateOpt.push_back({ "Mythos", "Death", "Nature", "Deception", "Fate", "Conquest", "Wilds", "Security", "Desire", "Spring", "Summer", "Fall", "Winter", "Progression", "Monsters" });
+
+    std::vector<string> returnBack;
+
     string text[] = { "Skelstaris", "Human", "Fire", "Faith", "Mythos" };
 
     Menu newMenu(400, 400, 200, 600, { "Background", "Stats", "Print", "Exit" });
@@ -1137,7 +1148,9 @@ void charGen::mainMenu(sf::RenderWindow& window) {
             if (event.type == sf::Event::MouseButtonPressed)
                 switch (hoverVal) {
                 case 0:
-                    charGen::backgroundMenu(window, text);
+                    returnBack = charGen::backgroundMenu(window, backCate, backCateOpt);
+                    for (string i : returnBack)
+                        cout << i << " ";
                     break;
                 case 1:
                     charGenStatsMainMenu(window, abilityList, weaknessList);
@@ -1162,6 +1175,7 @@ void charGen::mainMenu(sf::RenderWindow& window) {
     }
 }
 
+/*
 void charGen::backgroundMenu(sf::RenderWindow& window, string(&text)[5]) {
     sf::Vector2<int> mousePos;
     int currentCate;
@@ -1235,9 +1249,9 @@ void charGen::backgroundMenu(sf::RenderWindow& window, string(&text)[5]) {
         window.display();
     }
 }
+*/
 
-// TBD: Update returnVal, Comments
-std::vector<std::string> charGen::backgroundMenu2(sf::RenderWindow& window, std::vector<std::string> cates, std::vector<std::vector<std::string>> cateOpts) {
+std::vector<std::string> charGen::backgroundMenu(sf::RenderWindow& window, std::vector<std::string> cates, std::vector<std::vector<std::string>> cateOpts) {
     // Validate Categories Have Values
     if (cates.size() == 0) {
         cout << "No Categories Found\n";
@@ -1262,6 +1276,7 @@ std::vector<std::string> charGen::backgroundMenu2(sf::RenderWindow& window, std:
     for (std::vector<std::string> optsPoss : cateOpts)
         returnVal.push_back(optsPoss[0]);
     
+    // Break loop is the window is closed
     while (window.isOpen())
     {
         mousePos = sf::Mouse::getPosition(window);
@@ -1274,16 +1289,28 @@ std::vector<std::string> charGen::backgroundMenu2(sf::RenderWindow& window, std:
 
             if (event.type == sf::Event::MouseButtonPressed) {
                 switch (hoverVal) {
+                // "Change" Button
                 case 0:
+                    // Change to another option 
                     newScreen.swapOptions();
                     break;
+                // "Next" Button
                 case 1:
+                    // Update the return val
+                    returnVal[cateCurr] = cateOpts[cateCurr][newScreen.optSel];
+
+                    // Go to the next category
                     cateCurr++;
                     if (cateCurr < cateSize) {
                         newScreen.swapData(cates[cateCurr], cateOpts[cateCurr]);
                     }
                     break;
+                // "Back" Button
                 case 2:
+                    // Update the return val
+                    returnVal[cateCurr] = cateOpts[cateCurr][newScreen.optSel];
+
+                    // Go to the previous category
                     cateCurr--;
                     if (cateCurr >= 0) {
                         newScreen.swapData(cates[cateCurr], cateOpts[cateCurr]);
@@ -1294,7 +1321,7 @@ std::vector<std::string> charGen::backgroundMenu2(sf::RenderWindow& window, std:
 
             
         }
-
+        // Break the loop when out of categories
         if (cateCurr >= cateSize || cateCurr < 0) {
             break;
         }
