@@ -68,6 +68,17 @@ Menu::Menu(int x, int y, int height, float width, std::vector<std::string> optio
 	}
 }
 
+// TBD Menu with custom configurations
+Menu::Menu(int x, int y, int height, float width, std::vector<std::string> options, std::vector<int> position) {
+	int sumOpts = 0;
+	for (int num : position)
+		sumOpts += num;
+
+	cout << sumOpts << "\n";
+	cout << (sumOpts == options.size());
+	return;
+}
+
 int Menu::hover(sf::Vector2i& mousePt) {
 	int returnVal = -1;
 

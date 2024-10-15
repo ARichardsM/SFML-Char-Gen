@@ -1148,12 +1148,15 @@ void charGen::mainMenu(sf::RenderWindow& window) {
             if (event.type == sf::Event::MouseButtonPressed)
                 switch (hoverVal) {
                 case 0:
+                    // Start the Backgound Creator
                     returnBack = charGen::backgroundMenu(window, backCate, backCateOpt);
+
+                    // Print the Result to the Console
                     for (string i : returnBack)
                         cout << i << " ";
                     break;
                 case 1:
-                    charGenStatsMainMenu(window, abilityList, weaknessList);
+                    charGen::statsMenu(window, abilityList, weaknessList);
                     break;
                 case 2:
                     printCharGen(text, abilityList, weaknessList);
@@ -1174,82 +1177,6 @@ void charGen::mainMenu(sf::RenderWindow& window) {
         window.display();
     }
 }
-
-/*
-void charGen::backgroundMenu(sf::RenderWindow& window, string(&text)[5]) {
-    sf::Vector2<int> mousePos;
-    int currentCate;
-    Menu newMenu(400, 400, 200, 600, { "Change", "Next", "Back" });
-    selectScreen newScreen("Nation", { "Skelstaris", "Blaycorrum", "Arim", "Native" });
-    std::vector<std::vector<string>> cates;
-
-    cates.push_back({ "Skelstaris", "Blaycorrum", "Arim", "Native" });
-    cates.push_back({ "Human", "Halfling", "Goliath" });
-    cates.push_back({ "Fire", "Water", "Earth", "Wind", "Ice", "Lightning", "Shadow", "Light" });
-    cates.push_back({ "Faith", "Magic", "Tech", "Instinct" });
-    cates.push_back({ "Mythos", "Death", "Nature", "Deception", "Fate", "Conquest", "Wilds", "Security", "Desire", "Spring", "Summer", "Fall", "Winter", "Progression", "Monsters" });
-
-    string categories[] = { "Nation", "Race", "Element", "Source", "Religion" };
-    std::vector<string> categorie;
-
-    charGen::backgroundMenu2(window, categorie, cates);
-    categorie = { "Nation", "Race", "Element" };
-    charGen::backgroundMenu2(window, categorie, cates);
-    categorie = { "Nation", "Race", "Element", "Source", "Religion" };
-    std::vector<string> categori = charGen::backgroundMenu2(window, categorie, cates);
-    for (string txt : categori)
-        cout << txt << "\n";
-
-    currentCate = 0;
-
-    while (window.isOpen())
-    {
-        mousePos = sf::Mouse::getPosition(window);
-
-        sf::Event event;
-        int hoverVal = newMenu.hover(mousePos);
-
-        while (window.pollEvent(event))
-        {
-            if (event.type == sf::Event::Closed)
-                window.close();
-
-            
-            if (event.type == sf::Event::MouseButtonPressed) {
-                switch (hoverVal) {
-                case 0:
-                    newScreen.swapOptions();
-                    swapOption(currentCate, text[currentCate]);
-                    break;
-                case 1:
-                    currentCate += 1;
-                    if (currentCate <= 4) {
-                        newScreen.swapData(categories[currentCate], cates[currentCate]);
-                    }
-                    break;
-                case 2:
-                    currentCate -= 1;
-                    if (currentCate >= 0) {
-                        newScreen.swapData(categories[currentCate], cates[currentCate]);
-                    }
-                    break;
-                }
-            }
-
-            if (currentCate > 4 || currentCate < 0) {
-                cout << text[0] << " " << text[1] << " " << text[2] << " " << text[3] << " " << text[4] << " " << endl;
-                return;
-            }
-        }
-
-        // Draw the window
-        window.clear();
-        newMenu.draw(window);
-        newScreen.draw(window);
-        window.display();
-    }
-}
-*/
 
 std::vector<std::string> charGen::backgroundMenu(sf::RenderWindow& window, std::vector<std::string> cates, std::vector<std::vector<std::string>> cateOpts) {
     // Validate Categories Have Values
@@ -1334,4 +1261,186 @@ std::vector<std::string> charGen::backgroundMenu(sf::RenderWindow& window, std::
     }
     
     return returnVal;
+}
+
+void charGen::statsMenu(sf::RenderWindow& window, std::vector<std::vector<std::string>>& abilityList, std::vector<std::vector<std::string>>& weaknessList) {
+    Menu newMenu1(400, 400, 200, 600, { "Change", "Next", "Back" }, {2});
+    Menu newMenu2(400, 400, 200, 600, { "Change", "Next", "Back" }, {});
+    Menu newMenu3(400, 400, 200, 600, { "Change", "Next", "Back" }, {1, 2});
+    
+    vector<Button> buttons;
+    vector<sf::Text> titles;
+    vector<sf::Text> actAbil;
+    vector<sf::Text> actWeak;
+
+    sf::Vector2<int> mousePos;
+    sf::Font font;
+    sf::FloatRect temp;
+
+    font.loadFromFile("font/arial.ttf");
+
+    for (int i = 0; i < 4; i++) {
+        buttons.push_back(Button(sf::Vector2f(340, 50)));
+        buttons[i].text.setFont(font);
+        buttons[i].setPosition(225.f + (350.f * floor(i / 2)), 445.f + (60.f * (i % 2)));
+    }
+
+    string titleText[] = { "ABILITIES", "WEAKNESSES" };
+    for (int i = 0; i < 2; i++) {
+        titles.push_back(sf::Text());
+        titles[i].setCharacterSize(24);
+        titles[i].setFont(font);
+        titles[i].setFillColor(sf::Color::Cyan);
+        titles[i].setString(titleText[i]);
+        temp = titles[i].getLocalBounds();
+        titles[i].setOrigin(temp.left + temp.width / 2.0f, 0);
+        titles[i].setPosition(225.f + (350 * i), 15);
+    }
+
+    buttons.push_back(Button(sf::Vector2f(700, 50)));
+    buttons[4].text.setFont(font);
+    buttons[4].setPosition(400.0, 565.0);
+
+    buttons[0].setString("Add");
+    buttons[1].setString("Remove");
+    buttons[2].setString("Add");
+    buttons[3].setString("Remove");
+    buttons[4].setString("Done");
+
+    for (int i = 0; i < weaknessList.size(); i++) {
+        actWeak.push_back(sf::Text());
+
+        actWeak[i].setCharacterSize(20);
+        actWeak[i].setFont(font);
+        actWeak[i].setFillColor(sf::Color::Cyan);
+        actWeak[i].setString(weaknessList[i][0] + " (Level " + weaknessList[i][1] + ")");
+        temp = actWeak[i].getLocalBounds();
+        actWeak[i].setOrigin(temp.left + temp.width / 2.0f, 0);
+        actWeak[i].setPosition(575.f, 40 + (22 * i));
+    }
+
+    for (int i = 0; i < abilityList.size(); i++) {
+        actAbil.push_back(sf::Text());
+
+        actAbil[i].setCharacterSize(20);
+        actAbil[i].setFont(font);
+        actAbil[i].setFillColor(sf::Color::Cyan);
+        actAbil[i].setString(abilityList[i][0] + " (Level " + abilityList[i][1] + ")");
+        temp = actAbil[i].getLocalBounds();
+        actAbil[i].setOrigin(temp.left + temp.width / 2.0f, 0);
+        actAbil[i].setPosition(225.f, 40 + (22 * i));
+    }
+
+
+    while (window.isOpen())
+    {
+        mousePos = sf::Mouse::getPosition(window);
+        int mouseX = mousePos.x;
+        int mouseY = mousePos.y;
+
+        sf::Event event;
+        while (window.pollEvent(event))
+        {
+            if (event.type == sf::Event::Closed)
+                window.close();
+
+            if (buttons[0].hover(mousePos) && event.type == sf::Event::MouseButtonPressed) {
+                vector<string> returnedContent = charGenStatsAddMenu(window, true);
+                if (returnedContent.size() > 1) {
+                    abilityList.push_back(returnedContent);
+                    actAbil.clear();
+                    for (int i = 0; i < abilityList.size(); i++) {
+                        actAbil.push_back(sf::Text());
+
+                        actAbil[i].setCharacterSize(20);
+                        actAbil[i].setFont(font);
+                        actAbil[i].setFillColor(sf::Color::Cyan);
+                        actAbil[i].setString(abilityList[i][0] + " (Level " + abilityList[i][1] + ")");
+                        temp = actAbil[i].getLocalBounds();
+                        actAbil[i].setOrigin(temp.left + temp.width / 2.0f, 0);
+                        actAbil[i].setPosition(225.f, 40 + (22 * i));
+                    }
+                }
+            }
+            else if (buttons[1].hover(mousePos) && event.type == sf::Event::MouseButtonPressed) {
+                if (abilityList.size() > 0) {
+                    charGenStatsRemoveMenu(window, true, abilityList);
+                    actAbil.clear();
+                    for (int i = 0; i < abilityList.size(); i++) {
+                        actAbil.push_back(sf::Text());
+
+                        actAbil[i].setCharacterSize(20);
+                        actAbil[i].setFont(font);
+                        actAbil[i].setFillColor(sf::Color::Cyan);
+                        actAbil[i].setString(abilityList[i][0] + " (Level " + abilityList[i][1] + ")");
+                        temp = actAbil[i].getLocalBounds();
+                        actAbil[i].setOrigin(temp.left + temp.width / 2.0f, 0);
+                        actAbil[i].setPosition(225.f, 40 + (22 * i));
+                    }
+                }
+            }
+            else if (buttons[2].hover(mousePos) && event.type == sf::Event::MouseButtonPressed) {
+                vector<string> returnedContent = charGenStatsAddMenu(window, false);
+                if (returnedContent.size() > 1) {
+                    weaknessList.push_back(returnedContent);
+                    actWeak.clear();
+                    for (int i = 0; i < weaknessList.size(); i++) {
+                        actWeak.push_back(sf::Text());
+
+                        actWeak[i].setCharacterSize(20);
+                        actWeak[i].setFont(font);
+                        actWeak[i].setFillColor(sf::Color::Cyan);
+                        actWeak[i].setString(weaknessList[i][0] + " (Level " + weaknessList[i][1] + ")");
+                        temp = actWeak[i].getLocalBounds();
+                        actWeak[i].setOrigin(temp.left + temp.width / 2.0f, 0);
+                        actWeak[i].setPosition(575.f, 40 + (22 * i));
+                    }
+                }
+
+            }
+            else if (buttons[3].hover(mousePos) && event.type == sf::Event::MouseButtonPressed) {
+                if (weaknessList.size() > 0) {
+                    charGenStatsRemoveMenu(window, false, weaknessList);
+                    actWeak.clear();
+                    for (int i = 0; i < weaknessList.size(); i++) {
+                        actWeak.push_back(sf::Text());
+
+                        actWeak[i].setCharacterSize(20);
+                        actWeak[i].setFont(font);
+                        actWeak[i].setFillColor(sf::Color::Cyan);
+                        actWeak[i].setString(weaknessList[i][0] + " (Level " + weaknessList[i][1] + ")");
+                        temp = actWeak[i].getLocalBounds();
+                        actWeak[i].setOrigin(temp.left + temp.width / 2.0f, 0);
+                        actWeak[i].setPosition(575.f, 40 + (22 * i));
+                    }
+                }
+
+            }
+            else if (buttons[4].hover(mousePos) && event.type == sf::Event::MouseButtonPressed) {
+                return;
+            }
+        }
+
+        // Draw the window
+        window.clear();
+
+        for (int i = 0; i < actAbil.size(); i++) {
+            window.draw(actAbil[i]);
+        }
+
+        for (int i = 0; i < actWeak.size(); i++) {
+            window.draw(actWeak[i]);
+        }
+
+        for (int i = 0; i < 2; i++) {
+            window.draw(titles[i]);
+        }
+
+        for (int i = 0; i < 5; i++) {
+            window.draw(buttons[i].box);
+            window.draw(buttons[i].text);
+        }
+        window.display();
+    }
+    return;
 }

@@ -26,7 +26,7 @@ public:
 	void setFont(sf::Font& font);
 };
 
-// GUI Menu CLass
+// GUI Menu Class
 class Menu {
 public:
 	std::vector<Button> Buttons;
@@ -35,6 +35,7 @@ public:
 
 	// Initializer
 	Menu(int x, int y, int height, float width, std::vector<std::string> options);
+	Menu(int x, int y, int height, float width, std::vector<std::string> options, std::vector<int> position);
 
 	// Determines If The Mouse Is Hovering Any Element In The Menu
 	int hover(sf::Vector2i& mousePt);
