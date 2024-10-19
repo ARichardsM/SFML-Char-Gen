@@ -52,30 +52,54 @@ void Button::setFont(sf::Font& font) {
 }
 
 Menu::Menu(int x, int y, int height, float width, std::vector<std::string> options) {
+	// Determine button height
 	float trueHeight = (height - (options.size() * 10)) / options.size();
 
+	// Save menu data
 	Options = options;
 	TxtFont.loadFromFile("font/arial.ttf");
 
+	// Create and configure all buttons
 	for (std::string text: options) {
+		int buttonNum = Buttons.size();
 		Buttons.push_back(Button({ width, trueHeight }));
-	}
-
-	for (int i = 0; i < Buttons.size(); i++){
-		Buttons[i].setPosition(x, y + (i * (height / options.size())));
-		Buttons[i].setFont(TxtFont);
-		Buttons[i].setString(Options[i]);
+		Buttons[buttonNum].setPosition(x, y + (buttonNum * (height / options.size())));
+		Buttons[buttonNum].setFont(TxtFont);
+		Buttons[buttonNum].setString(Options[buttonNum]);
 	}
 }
 
 // TBD Menu with custom configurations
 Menu::Menu(int x, int y, int height, float width, std::vector<std::string> options, std::vector<int> position) {
+	// Verify Positioning
 	int sumOpts = 0;
 	for (int num : position)
 		sumOpts += num;
 
-	cout << sumOpts << "\n";
-	cout << (sumOpts == options.size());
+	if (sumOpts != options.size()) {
+		cout << "Improper Positioning\n";
+		return;
+	}
+
+	// Determine button height
+	float trueHeight = (height - (position.size() * 10)) / position.size();
+
+	// Save menu data
+	Options = options;
+	TxtFont.loadFromFile("font/arial.ttf");
+
+	// Create all buttons
+	for (int i = 0; i < position.size(); i++) {
+	//for (int numEnt: position) {
+		float trueWidth = (width - (position[i] * 10)) / position[i];
+		for (int j = 0; j < position[i]; j++) {
+			int buttonNum = Buttons.size();
+			Buttons.push_back(Button({ trueWidth, trueHeight }));
+			Buttons[buttonNum].setPosition(((x - width / 2) + (width / (2 * position[i]))) + (j * (width / position[i])), y + (i * (height / position.size())));
+			Buttons[buttonNum].setFont(TxtFont);
+			Buttons[buttonNum].setString(Options[buttonNum]);
+		}
+	}
 	return;
 }
 

@@ -1436,10 +1436,13 @@ void charGen::statsMenu(sf::RenderWindow& window, std::vector<std::vector<std::s
             window.draw(titles[i]);
         }
 
+        /*
         for (int i = 0; i < 5; i++) {
             window.draw(buttons[i].box);
             window.draw(buttons[i].text);
         }
+        */
+        newMenu3.draw(window);
         window.display();
     }
     return;
