@@ -121,7 +121,7 @@ void Menu::draw(sf::RenderWindow& window) {
 	}
 }
 
-selectScreen::selectScreen(std::string topText, std::vector<std::string> optText) {
+backgroundScreen::backgroundScreen(std::string topText, std::vector<std::string> optText) {
 	TxtFont.loadFromFile("font/arial.ttf");
 	title = topText;
 	options = optText;
@@ -153,7 +153,7 @@ selectScreen::selectScreen(std::string topText, std::vector<std::string> optText
 	return;
 }
 
-void selectScreen::updateDisplay() {
+void backgroundScreen::updateDisplay() {
 	// Update the title
 	display.title.setString(title);
 	sf::FloatRect temp = display.title.getLocalBounds();
@@ -205,7 +205,7 @@ void selectScreen::updateDisplay() {
 	
 }
 
-void selectScreen::swapOptions() {
+void backgroundScreen::swapOptions() {
 	//display.title.setString(topText);
 
 	if (optSel < options.size() - 1) {
@@ -219,7 +219,7 @@ void selectScreen::swapOptions() {
 	return;
 }
 
-void selectScreen::swapData(std::string topText, std::vector<std::string> optText) {
+void backgroundScreen::swapData(std::string topText, std::vector<std::string> optText) {
 	title = topText;
 	options = optText;
 	optSel = 0;
@@ -228,7 +228,7 @@ void selectScreen::swapData(std::string topText, std::vector<std::string> optTex
 	return;
 }
 
-void selectScreen::draw(sf::RenderWindow& window) {
+void backgroundScreen::draw(sf::RenderWindow& window) {
 	window.draw(display.title);
 	window.draw(display.name);
 
@@ -239,5 +239,13 @@ void selectScreen::draw(sf::RenderWindow& window) {
 		for (int i = 0; i < display.bodyArray.size(); i++)
 			window.draw(display.bodyArray[i]);
 
+	return;
+}
+
+statScreen::statScreen(std::vector<std::vector<std::string>> abilList, std::vector<std::vector<std::string>> weakList) {
+	return;
+}
+
+void statScreen::swapData(std::vector<std::string> abilList, std::vector<std::string> weakList) {
 	return;
 }

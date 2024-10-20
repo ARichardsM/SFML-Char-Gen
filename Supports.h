@@ -44,8 +44,8 @@ public:
 };
 
 
-// GUI Selection Window
-class selectScreen {
+// GUI Selection Window For Background
+class backgroundScreen {
 public:
 	struct {
 		sf::Text title;
@@ -62,7 +62,7 @@ public:
 	bool imageBool, txtBool;
 
 	// Initializer
-	selectScreen(std::string topText, std::vector<std::string> optText);
+	backgroundScreen(std::string topText, std::vector<std::string> optText);
 
 	// Change Title and Options
 	void swapData(std::string topText, std::vector<std::string> optText);
@@ -75,4 +75,22 @@ public:
 
 	// Handles Drawing All Parts of the Screen
 	void draw(sf::RenderWindow& window);
+};
+
+// GUI Selection Window For Stats
+class statScreen {
+public:
+	struct {
+		sf::Text abilTitle, weakTitle;
+		std::vector<sf::Text> abilBody, weakBody;
+	} display;
+
+	std::vector<std::string> abilArray, weakArray;
+	sf::Font TxtFont;
+
+	// Initializer
+	statScreen(std::vector<std::vector<std::string>> abilList, std::vector<std::vector<std::string>> weakList);
+
+	// Change Title and Body
+	void swapData(std::vector<std::string> abilList, std::vector<std::string> weakList);
 };

@@ -1193,7 +1193,7 @@ std::vector<std::string> charGen::backgroundMenu(sf::RenderWindow& window, std::
     
     // Initialize Variables
     Menu newMenu(400, 400, 200, 600, { "Change", "Next", "Back" });
-    selectScreen newScreen(cates[0], cateOpts[0]);
+    backgroundScreen newScreen(cates[0], cateOpts[0]);
     sf::Vector2<int> mousePos;
     int cateCurr = 0, cateSize = cates.size(), hoverVal;
     sf::Event event;
@@ -1264,11 +1264,14 @@ std::vector<std::string> charGen::backgroundMenu(sf::RenderWindow& window, std::
 }
 
 void charGen::statsMenu(sf::RenderWindow& window, std::vector<std::vector<std::string>>& abilityList, std::vector<std::vector<std::string>>& weaknessList) {
-    Menu newMenu1(400, 400, 200, 600, { "Change", "Next", "Back" }, {2});
-    Menu newMenu2(400, 400, 200, 600, { "Change", "Next", "Back" }, {});
-    Menu newMenu3(400, 400, 200, 600, { "Change", "Next", "Back" }, {1, 2});
+    // Prepare the screen
+    Menu newMenu(400, 400, 200, 600, 
+        { "Add", "Add", "Remove", "Remove", "Main Menu"},
+        { 2, 2, 1 });
+
+    statScreen newStat(abilityList, weaknessList);
+
     
-    vector<Button> buttons;
     vector<sf::Text> titles;
     vector<sf::Text> actAbil;
     vector<sf::Text> actWeak;
@@ -1277,13 +1280,9 @@ void charGen::statsMenu(sf::RenderWindow& window, std::vector<std::vector<std::s
     sf::Font font;
     sf::FloatRect temp;
 
-    font.loadFromFile("font/arial.ttf");
+    int hoverVal;
 
-    for (int i = 0; i < 4; i++) {
-        buttons.push_back(Button(sf::Vector2f(340, 50)));
-        buttons[i].text.setFont(font);
-        buttons[i].setPosition(225.f + (350.f * floor(i / 2)), 445.f + (60.f * (i % 2)));
-    }
+    font.loadFromFile("font/arial.ttf");
 
     string titleText[] = { "ABILITIES", "WEAKNESSES" };
     for (int i = 0; i < 2; i++) {
@@ -1296,16 +1295,6 @@ void charGen::statsMenu(sf::RenderWindow& window, std::vector<std::vector<std::s
         titles[i].setOrigin(temp.left + temp.width / 2.0f, 0);
         titles[i].setPosition(225.f + (350 * i), 15);
     }
-
-    buttons.push_back(Button(sf::Vector2f(700, 50)));
-    buttons[4].text.setFont(font);
-    buttons[4].setPosition(400.0, 565.0);
-
-    buttons[0].setString("Add");
-    buttons[1].setString("Remove");
-    buttons[2].setString("Add");
-    buttons[3].setString("Remove");
-    buttons[4].setString("Done");
 
     for (int i = 0; i < weaknessList.size(); i++) {
         actWeak.push_back(sf::Text());
@@ -1338,12 +1327,39 @@ void charGen::statsMenu(sf::RenderWindow& window, std::vector<std::vector<std::s
         int mouseX = mousePos.x;
         int mouseY = mousePos.y;
 
+        hoverVal = newMenu.hover(mousePos);
+
         sf::Event event;
         while (window.pollEvent(event))
         {
             if (event.type == sf::Event::Closed)
                 window.close();
 
+            if (event.type == sf::Event::MouseButtonPressed) {
+                switch (hoverVal) {
+                case 0:
+                    // Add Ability Button
+                    cout << "AA\n";
+                    break;
+                case 1:
+                    // Add Weakness Button
+                    cout << "AW\n";
+                    break;
+                case 2:
+                    // Remove Ability Button
+                    cout << "RA\n";
+                    break;
+                case 3:
+                    // Remove Weakness Button
+                    cout << "RW\n";
+                    break;
+                case 4:
+                    // Main Menu Button
+                    return;
+                    break;
+                }
+            }
+            /*
             if (buttons[0].hover(mousePos) && event.type == sf::Event::MouseButtonPressed) {
                 vector<string> returnedContent = charGenStatsAddMenu(window, true);
                 if (returnedContent.size() > 1) {
@@ -1419,6 +1435,7 @@ void charGen::statsMenu(sf::RenderWindow& window, std::vector<std::vector<std::s
             else if (buttons[4].hover(mousePos) && event.type == sf::Event::MouseButtonPressed) {
                 return;
             }
+            */
         }
 
         // Draw the window
@@ -1436,13 +1453,7 @@ void charGen::statsMenu(sf::RenderWindow& window, std::vector<std::vector<std::s
             window.draw(titles[i]);
         }
 
-        /*
-        for (int i = 0; i < 5; i++) {
-            window.draw(buttons[i].box);
-            window.draw(buttons[i].text);
-        }
-        */
-        newMenu3.draw(window);
+        newMenu.draw(window);
         window.display();
     }
     return;
