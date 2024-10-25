@@ -1105,8 +1105,8 @@ void charGen::mainMenu(sf::RenderWindow& window) {
     sf::CircleShape shape(100.f);
     sf::Font font;
 
-    vector<vector<string>> abilityList;
-    vector<vector<string>> weaknessList;
+    vector<statBlock> abilityList;
+    vector<statBlock> weaknessList;
 
     std::vector<string> backCate = { "Nation", "Race", "Element", "Source", "Religion" };
     std::vector<std::vector<string>> backCateOpt;
@@ -1159,7 +1159,7 @@ void charGen::mainMenu(sf::RenderWindow& window) {
                     charGen::statsMenu(window, abilityList, weaknessList);
                     break;
                 case 2:
-                    printCharGen(text, abilityList, weaknessList);
+                   // printCharGen(text, abilityList, weaknessList);
                     break;
                 case 3:
                     return;
@@ -1263,13 +1263,15 @@ std::vector<std::string> charGen::backgroundMenu(sf::RenderWindow& window, std::
     return returnVal;
 }
 
-void charGen::statsMenu(sf::RenderWindow& window, std::vector<std::vector<std::string>>& abilityList, std::vector<std::vector<std::string>>& weaknessList) {
+void charGen::statsMenu(sf::RenderWindow& window, std::vector<statBlock>& abilityList, std::vector<statBlock>& weaknessList) {
     // Prepare the screen
     Menu newMenu(400, 400, 200, 600, 
         { "Add", "Add", "Remove", "Remove", "Main Menu"},
         { 2, 2, 1 });
 
-    statScreen newStat(abilityList, weaknessList);
+    std::vector<std::vector<std::string>> ListA;
+    std::vector<std::vector<std::string>> ListW;
+    statScreen newStat(ListA, ListW);
 
     
     vector<sf::Text> titles;
@@ -1302,7 +1304,7 @@ void charGen::statsMenu(sf::RenderWindow& window, std::vector<std::vector<std::s
         actWeak[i].setCharacterSize(20);
         actWeak[i].setFont(font);
         actWeak[i].setFillColor(sf::Color::Cyan);
-        actWeak[i].setString(weaknessList[i][0] + " (Level " + weaknessList[i][1] + ")");
+        actWeak[i].setString(weaknessList[i].name + " (Level " + to_string(weaknessList[i].value) + ")");
         temp = actWeak[i].getLocalBounds();
         actWeak[i].setOrigin(temp.left + temp.width / 2.0f, 0);
         actWeak[i].setPosition(575.f, 40 + (22 * i));
@@ -1314,7 +1316,7 @@ void charGen::statsMenu(sf::RenderWindow& window, std::vector<std::vector<std::s
         actAbil[i].setCharacterSize(20);
         actAbil[i].setFont(font);
         actAbil[i].setFillColor(sf::Color::Cyan);
-        actAbil[i].setString(abilityList[i][0] + " (Level " + abilityList[i][1] + ")");
+        actAbil[i].setString(abilityList[i].name + " (Level " + to_string(abilityList[i].value) + ")");
         temp = actAbil[i].getLocalBounds();
         actAbil[i].setOrigin(temp.left + temp.width / 2.0f, 0);
         actAbil[i].setPosition(225.f, 40 + (22 * i));
@@ -1340,18 +1342,39 @@ void charGen::statsMenu(sf::RenderWindow& window, std::vector<std::vector<std::s
                 case 0:
                     // Add Ability Button
                     cout << "AA\n";
+                    charGen::stats::addMenu(window, abilityList, "Abilities");
+                    charGen::stats::reconfigDisplay(font, abilityList, actAbil);
+                    for (int i = 0; i < actAbil.size(); i++) {
+                        actAbil[i].setPosition(225.f, 40 + (22 * i));
+                    }
+                    
                     break;
                 case 1:
                     // Add Weakness Button
                     cout << "AW\n";
+                    charGen::stats::addMenu(window, weaknessList, "Weakness");
+                    charGen::stats::reconfigDisplay(font, weaknessList, actWeak);
+                    for (int i = 0; i < actWeak.size(); i++) {
+                        actWeak[i].setPosition(575.f, 40 + (22 * i));
+                    }
                     break;
                 case 2:
                     // Remove Ability Button
                     cout << "RA\n";
+                    charGen::stats::adjustMenu(window, abilityList);
+                    charGen::stats::reconfigDisplay(font, abilityList, actAbil);
+                    for (int i = 0; i < actAbil.size(); i++) {
+                        actAbil[i].setPosition(225.f, 40 + (22 * i));
+                    }
                     break;
                 case 3:
                     // Remove Weakness Button
                     cout << "RW\n";
+                    charGen::stats::adjustMenu(window, weaknessList);
+                    charGen::stats::reconfigDisplay(font, weaknessList, actWeak);
+                    for (int i = 0; i < actWeak.size(); i++) {
+                        actWeak[i].setPosition(575.f, 40 + (22 * i));
+                    }
                     break;
                 case 4:
                     // Main Menu Button
@@ -1456,5 +1479,288 @@ void charGen::statsMenu(sf::RenderWindow& window, std::vector<std::vector<std::s
         newMenu.draw(window);
         window.display();
     }
+    return;
+}
+
+void charGen::stats::addMenu(sf::RenderWindow& window, std::vector<statBlock>& propList, const string& file) {
+    statBlock newStat;
+
+    newStat.description = "A";
+    newStat.name = "A";
+    newStat.value = 3;
+
+    propList.push_back(newStat);
+    return;
+}
+
+void charGen::stats::adjustMenu(sf::RenderWindow& window, std::vector<statBlock>& propList) {
+    vector<Button> optionsButtons;
+    vector<Button> selectionButtons;
+    vector<Button> optionArrowButtons;
+    vector<Button> alphabetButtons;
+
+    sf::Vector2<int> mousePos;
+    sf::Font font;
+    sf::FloatRect temp;
+
+    vector<sf::Text> statText;
+    vector<sf::Text> bodyText;
+    int statVal = 1;
+    int listPos = 0;
+    int alphaPicked = 0;
+    int selection = 0;
+    string text[] = { "A", "B", "C", "D", "E", "F", "G", "H", "I", "J", "K", "L", "M", "N", "O", "P", "Q", "R", "S", "T", "U", "V", "W", "X", "Y", "Z" };
+    string crop = "";
+
+    string line, linePart;
+    vector<string> parts;
+    vector<string> opt;
+    vector<vector<string>> options;
+    Menu optMenu(400, 500, 100, 800, { "Increase", "Decrease", "Exit" }, { 3 });
+
+    for (int i = 0; i < 26; i++) {
+        alphabetButtons.push_back(Button(sf::Vector2f(25, 25)));
+        alphabetButtons[i].box.setFillColor(sf::Color::White);
+    }
+
+    for (int i = 0; i < 5; i++) {
+        optionsButtons.push_back(Button(sf::Vector2f(700, 50)));
+    }
+
+    for (int i = 0; i < 4; i++) {
+        selectionButtons.push_back(Button(sf::Vector2f(100, 50)));
+    }
+
+    for (int i = 0; i < 2; i++) {
+        optionArrowButtons.push_back(Button(sf::Vector2f(50, 25)));
+        statText.push_back(sf::Text());
+    }
+
+    font.loadFromFile("font/arial.ttf");
+
+    for (int i = 0; i < 26; i++) {
+        alphabetButtons[i].text.setFont(font);
+        alphabetButtons[i].setString(text[i]);
+        alphabetButtons[i].setPosition(17.5f + 7.5f + (30.0f * i), 17.5f);
+    }
+
+    for (int i = 0; i < 2; i++) {
+        optionArrowButtons[i].text.setFont(font);
+        optionArrowButtons[i].setPosition(400, 22.5f + alphabetButtons[1].height + (305 * i));
+        statText[i].setCharacterSize(24);
+        statText[i].setFont(font);
+        statText[i].setFillColor(sf::Color::Cyan);
+    }
+
+    optionArrowButtons[0].setString("^");
+    optionArrowButtons[1].setString("v");
+
+    for (int i = 0; i < 5; i++) {
+        optionsButtons[i].text.setFont(font);
+        optionsButtons[i].setPosition(400, 40.0f + alphabetButtons[1].height + optionArrowButtons[1].height + (55 * i));
+    }
+
+    for (int i = 0; i < 4; i++) {
+        selectionButtons[i].text.setFont(font);
+        selectionButtons[i].setPosition(100 + (200 * i), 570.0f);
+    }
+
+    selectionButtons[0].setString("Higher");
+    selectionButtons[1].setString("Lower");
+    selectionButtons[2].setString("Accept");
+    selectionButtons[3].setString("Cancel");
+
+    /*
+    statVal = propList[0].value;
+    while (options[selection][0] != propList[0].name)
+        selection++;
+    */
+
+    while (window.isOpen())
+    {
+        
+        mousePos = sf::Mouse::getPosition(window);
+
+        sf::Event event;
+        int hoverVal;
+
+        while (window.pollEvent(event)) {
+            hoverVal = optMenu.hover(mousePos);
+
+            if (event.type == sf::Event::Closed)
+                window.close();
+
+            if (event.type == sf::Event::MouseButtonPressed){
+                switch (hoverVal) {
+                case -1:
+                    break;
+                case 0:
+                    statVal++;
+                    if (statVal > 5) {
+                        statVal = 5;
+                    }
+                    break;
+                case 1:
+                    statVal--;
+                    if (statVal < 0) {
+                        statVal = 0;
+                    }
+                    break;
+                case 2:
+                    return;
+                }
+            }
+        }
+        /*
+        while (window.pollEvent(event))
+        {
+            if (event.type == sf::Event::Closed)
+                window.close();
+
+            for (int i = 0; i < 26; i++) {
+                if (alphabetButtons[i].hover(mousePos) && event.type == sf::Event::MouseButtonPressed) {
+                    continue;
+                }
+            }
+
+            if (optionArrowButtons[1].hover(mousePos) && event.type == sf::Event::MouseButtonPressed) {
+                listPos++;
+                int math = propList.size() - optionsButtons.size();
+                if (listPos > math) {
+                    listPos = max(math, 0);
+                }
+            }
+            else if (optionArrowButtons[0].hover(mousePos) && event.type == sf::Event::MouseButtonPressed) {
+                listPos--;
+                if (listPos < 1) {
+                    listPos = 0;
+                }
+            }
+
+            if (selectionButtons[0].hover(mousePos) && event.type == sf::Event::MouseButtonPressed) {
+                int cap = 5;
+
+                statVal++;
+                if (statVal > cap) {
+                    statVal = cap;
+                }
+            }
+            else if (selectionButtons[1].hover(mousePos) && event.type == sf::Event::MouseButtonPressed) {
+                statVal--;
+                if (statVal < 0) {
+                    statVal = 0;
+                }
+            }
+            else if (selectionButtons[2].hover(mousePos) && event.type == sf::Event::MouseButtonPressed) {
+                vector<statBlock> prevContent = propList;
+                propList.clear();
+
+                for (int i = 0; i < prevContent.size(); i++) {
+                    if (prevContent[i].name != options[selection][0]) {
+                        propList.push_back(prevContent[i]);
+                    }
+                    else {
+                        if (statVal != 0) {
+                            //vector<string> w = ;
+                            propList.push_back({ prevContent[i].name, to_string(statVal) });
+                        }
+                    }
+                }
+                // = prevContent;
+                //.push_back(options[selection][0]);
+                //returnedContent.push_back(to_string(statVal));
+                return;
+            }
+            else if (selectionButtons[3].hover(mousePos) && event.type == sf::Event::MouseButtonPressed) {
+                return;
+            }
+
+            for (int i = 0; i < min(int(propList.size()), 5); i++) {
+                if (optionsButtons[i].hover(mousePos) && event.type == sf::Event::MouseButtonPressed) {
+                    selection = alphaPicked + i + listPos;
+                    statVal = propList[selection].value;
+                    int count = 0;
+                    while (options[count][0] != propList[selection].name)
+                        count++;
+                    selection = count;
+                }
+            }
+        }
+        */
+
+        // Draw the window
+        window.clear();
+
+        for (int i = 0; i < 26; i++) {
+            window.draw(alphabetButtons[i].box);
+            window.draw(alphabetButtons[i].text);
+        }
+
+        for (int i = 0; i < 2; i++) {
+            window.draw(optionArrowButtons[i].box);
+            window.draw(optionArrowButtons[i].text);
+        }
+
+        for (int i = 0; i < 4; i++) {
+            window.draw(selectionButtons[i].box);
+            window.draw(selectionButtons[i].text);
+        }
+
+        for (int i = 0; i < min(int(propList.size()), 5); i++) {
+            optionsButtons[i].setString(propList[i + listPos].name);
+            window.draw(optionsButtons[i].box);
+            window.draw(optionsButtons[i].text);
+        }
+
+        /*
+        statText[0].setString(options[selection][0] + " Level " + to_string(statVal));
+        swapSelection(options[selection][1], bodyText);
+        statText[1].setString(options[selection][1]);
+        */
+
+        for (int i = 0; i < bodyText.size(); i++) {
+            bodyText[i].setCharacterSize(20);
+            bodyText[i].setFont(font);
+            bodyText[i].setFillColor(sf::Color::Cyan);
+            temp = bodyText[i].getLocalBounds();
+            bodyText[i].setOrigin(temp.left + temp.width / 2.0f, 0);
+            bodyText[i].setPosition(400, 400 + (25 * i));
+            window.draw(bodyText[i]);
+        }
+
+
+        for (int i = 0; i < 1; i++) {
+            temp = statText[i].getLocalBounds();
+            statText[i].setOrigin(temp.left + temp.width / 2.0f, 0);
+            statText[i].setPosition(400, 370 + (30 * i));
+            window.draw(statText[i]);
+        }
+        optMenu.draw(window);
+        window.display();
+    }
+    return;
+}
+
+void charGen::stats::reconfigDisplay(sf::Font& font, std::vector<statBlock>& propList, std::vector<sf::Text>& dispList) {
+    // Clear the display
+    dispList.clear();
+
+    // Initalize Variables
+    sf::FloatRect temp;
+
+    // For each statBlock in the vector
+    for (int i = 0; i < propList.size(); i++) {
+        // Push a new display text
+        dispList.push_back(sf::Text());
+
+        // Adjust the display text to match the property
+        dispList[i].setCharacterSize(20);
+        dispList[i].setFont(font);
+        dispList[i].setFillColor(sf::Color::Cyan);
+        dispList[i].setString(propList[i].name + " (Level " + to_string(propList[i].value) + ")");
+        temp = dispList[i].getLocalBounds();
+        dispList[i].setOrigin(temp.left + temp.width / 2.0f, 0);
+    }
+
     return;
 }
