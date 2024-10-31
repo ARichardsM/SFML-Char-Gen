@@ -1495,9 +1495,7 @@ void charGen::stats::addMenu(sf::RenderWindow& window, std::vector<statBlock>& p
 
 void charGen::stats::adjustMenu(sf::RenderWindow& window, std::vector<statBlock>& propList) {
     vector<Button> optionsButtons;
-    vector<Button> selectionButtons;
     vector<Button> optionArrowButtons;
-    vector<Button> alphabetButtons;
 
     sf::Vector2<int> mousePos;
     sf::Font font;
@@ -1509,26 +1507,18 @@ void charGen::stats::adjustMenu(sf::RenderWindow& window, std::vector<statBlock>
     int listPos = 0;
     int alphaPicked = 0;
     int selection = 0;
-    string text[] = { "A", "B", "C", "D", "E", "F", "G", "H", "I", "J", "K", "L", "M", "N", "O", "P", "Q", "R", "S", "T", "U", "V", "W", "X", "Y", "Z" };
+    string alpha[] = { "A", "B", "C", "D", "E", "F", "G", "H", "I", "J", "K", "L", "M", "N", "O", "P", "Q", "R", "S", "T", "U", "V", "W", "X", "Y", "Z" };
     string crop = "";
 
     string line, linePart;
     vector<string> parts;
     vector<string> opt;
     vector<vector<string>> options;
+    Menu alpMenu(400, 5, 35, 800, { "A", "B", "C", "D", "E", "F", "G", "H", "I", "J", "K", "L", "M", "N", "O", "P", "Q", "R", "S", "T", "U", "V", "W", "X", "Y", "Z" }, { 26 });
     Menu optMenu(400, 500, 100, 800, { "Increase", "Decrease", "Exit" }, { 3 });
-
-    for (int i = 0; i < 26; i++) {
-        alphabetButtons.push_back(Button(sf::Vector2f(25, 25)));
-        alphabetButtons[i].box.setFillColor(sf::Color::White);
-    }
 
     for (int i = 0; i < 5; i++) {
         optionsButtons.push_back(Button(sf::Vector2f(700, 50)));
-    }
-
-    for (int i = 0; i < 4; i++) {
-        selectionButtons.push_back(Button(sf::Vector2f(100, 50)));
     }
 
     for (int i = 0; i < 2; i++) {
@@ -1538,15 +1528,9 @@ void charGen::stats::adjustMenu(sf::RenderWindow& window, std::vector<statBlock>
 
     font.loadFromFile("font/arial.ttf");
 
-    for (int i = 0; i < 26; i++) {
-        alphabetButtons[i].text.setFont(font);
-        alphabetButtons[i].setString(text[i]);
-        alphabetButtons[i].setPosition(17.5f + 7.5f + (30.0f * i), 17.5f);
-    }
-
     for (int i = 0; i < 2; i++) {
         optionArrowButtons[i].text.setFont(font);
-        optionArrowButtons[i].setPosition(400, 22.5f + alphabetButtons[1].height + (305 * i));
+        optionArrowButtons[i].setPosition(400, 22.5f + alpMenu.Buttons[1].height + (305 * i));
         statText[i].setCharacterSize(24);
         statText[i].setFont(font);
         statText[i].setFillColor(sf::Color::Cyan);
@@ -1557,18 +1541,8 @@ void charGen::stats::adjustMenu(sf::RenderWindow& window, std::vector<statBlock>
 
     for (int i = 0; i < 5; i++) {
         optionsButtons[i].text.setFont(font);
-        optionsButtons[i].setPosition(400, 40.0f + alphabetButtons[1].height + optionArrowButtons[1].height + (55 * i));
+        optionsButtons[i].setPosition(400, 40.0f + alpMenu.Buttons[1].height + optionArrowButtons[1].height + (55 * i));
     }
-
-    for (int i = 0; i < 4; i++) {
-        selectionButtons[i].text.setFont(font);
-        selectionButtons[i].setPosition(100 + (200 * i), 570.0f);
-    }
-
-    selectionButtons[0].setString("Higher");
-    selectionButtons[1].setString("Lower");
-    selectionButtons[2].setString("Accept");
-    selectionButtons[3].setString("Cancel");
 
     /*
     statVal = propList[0].value;
@@ -1582,10 +1556,11 @@ void charGen::stats::adjustMenu(sf::RenderWindow& window, std::vector<statBlock>
         mousePos = sf::Mouse::getPosition(window);
 
         sf::Event event;
-        int hoverVal;
+        int hoverVal, hoverValB;
 
         while (window.pollEvent(event)) {
             hoverVal = optMenu.hover(mousePos);
+            hoverValB = alpMenu.hover(mousePos);
 
             if (event.type == sf::Event::Closed)
                 window.close();
@@ -1691,19 +1666,9 @@ void charGen::stats::adjustMenu(sf::RenderWindow& window, std::vector<statBlock>
         // Draw the window
         window.clear();
 
-        for (int i = 0; i < 26; i++) {
-            window.draw(alphabetButtons[i].box);
-            window.draw(alphabetButtons[i].text);
-        }
-
         for (int i = 0; i < 2; i++) {
             window.draw(optionArrowButtons[i].box);
             window.draw(optionArrowButtons[i].text);
-        }
-
-        for (int i = 0; i < 4; i++) {
-            window.draw(selectionButtons[i].box);
-            window.draw(selectionButtons[i].text);
         }
 
         for (int i = 0; i < min(int(propList.size()), 5); i++) {
@@ -1735,7 +1700,9 @@ void charGen::stats::adjustMenu(sf::RenderWindow& window, std::vector<statBlock>
             statText[i].setPosition(400, 370 + (30 * i));
             window.draw(statText[i]);
         }
+        
         optMenu.draw(window);
+        alpMenu.draw(window);
         window.display();
     }
     return;
