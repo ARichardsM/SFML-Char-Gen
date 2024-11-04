@@ -1516,6 +1516,7 @@ void charGen::stats::adjustMenu(sf::RenderWindow& window, std::vector<statBlock>
     vector<vector<string>> options;
     Menu alpMenu(400, 5, 35, 800, { "A", "B", "C", "D", "E", "F", "G", "H", "I", "J", "K", "L", "M", "N", "O", "P", "Q", "R", "S", "T", "U", "V", "W", "X", "Y", "Z" }, { 26 });
     Menu optMenu(400, 500, 100, 800, { "Increase", "Decrease", "Exit" }, { 3 });
+    ScrollMenu dispMenu(400, 45, 450, 600, { "Increase", "Decrease", "Increase", "Decrease", "Exit" });
 
     for (int i = 0; i < 5; i++) {
         optionsButtons.push_back(Button(sf::Vector2f(700, 50)));
@@ -1556,11 +1557,12 @@ void charGen::stats::adjustMenu(sf::RenderWindow& window, std::vector<statBlock>
         mousePos = sf::Mouse::getPosition(window);
 
         sf::Event event;
-        int hoverVal, hoverValB;
+        int hoverVal, hoverValB, hoverValC;
 
         while (window.pollEvent(event)) {
             hoverVal = optMenu.hover(mousePos);
             hoverValB = alpMenu.hover(mousePos);
+            hoverValC = dispMenu.hover(mousePos);
 
             if (event.type == sf::Event::Closed)
                 window.close();
@@ -1665,7 +1667,8 @@ void charGen::stats::adjustMenu(sf::RenderWindow& window, std::vector<statBlock>
 
         // Draw the window
         window.clear();
-
+        
+        /*
         for (int i = 0; i < 2; i++) {
             window.draw(optionArrowButtons[i].box);
             window.draw(optionArrowButtons[i].text);
@@ -1676,6 +1679,7 @@ void charGen::stats::adjustMenu(sf::RenderWindow& window, std::vector<statBlock>
             window.draw(optionsButtons[i].box);
             window.draw(optionsButtons[i].text);
         }
+        */
 
         /*
         statText[0].setString(options[selection][0] + " Level " + to_string(statVal));
@@ -1703,6 +1707,7 @@ void charGen::stats::adjustMenu(sf::RenderWindow& window, std::vector<statBlock>
         
         optMenu.draw(window);
         alpMenu.draw(window);
+        dispMenu.draw(window);
         window.display();
     }
     return;

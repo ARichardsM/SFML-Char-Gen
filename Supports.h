@@ -36,6 +36,7 @@ public:
 	// Initializer
 	Menu(int x, int y, int height, float width, std::vector<std::string> options);
 	Menu(int x, int y, int height, float width, std::vector<std::string> options, std::vector<int> position);
+	Menu() = default;
 
 	// Determines If The Mouse Is Hovering Any Element In The Menu
 	int hover(sf::Vector2i& mousePt);
@@ -43,6 +44,22 @@ public:
 	void draw(sf::RenderWindow& window);
 };
 
+// GUI Menu Class
+class ScrollMenu : public Menu {
+public:
+	//std::vector<Button> Buttons;
+	//std::vector<std::string> Options;
+	//sf::Font TxtFont;
+
+	// Initializer
+	ScrollMenu(int x, int y, int height, float width, std::vector<std::string> options);
+	//Menu(int x, int y, int height, float width, std::vector<std::string> options, std::vector<int> position);
+
+	// Determines If The Mouse Is Hovering Any Element In The Menu
+	//int hover(sf::Vector2i& mousePt);
+	// Handles Drawing All Parts of the Menu
+	//void draw(sf::RenderWindow& window);
+};
 
 // GUI Selection Window For Background
 class backgroundScreen {

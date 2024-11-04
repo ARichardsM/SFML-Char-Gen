@@ -121,6 +121,41 @@ void Menu::draw(sf::RenderWindow& window) {
 	}
 }
 
+ScrollMenu::ScrollMenu(int x, int y, int height, float width, std::vector<std::string> options) {
+	// Track the current button
+	int buttonNum = 0;
+
+	// Determine button height
+	float trueHeight = (height - 70) / 7;
+
+	// Save menu data
+	Options = options;
+	TxtFont.loadFromFile("font/arial.ttf");
+
+	// 
+	buttonNum = Buttons.size();
+	Buttons.push_back(Button({ width/2, trueHeight }));
+	Buttons[buttonNum].setPosition(x, y + (buttonNum * (height / 7)));
+	Buttons[buttonNum].setFont(TxtFont);
+	Buttons[buttonNum].setString("Up");
+
+	// Create and configure all buttons
+	for (int i = 0; i < 5; i++) {
+		buttonNum = Buttons.size();
+		Buttons.push_back(Button({ width, trueHeight }));
+		Buttons[buttonNum].setPosition(x, y + (buttonNum * (height / 7)));
+		Buttons[buttonNum].setFont(TxtFont);
+		Buttons[buttonNum].setString(Options[i]);
+	}
+
+	// 
+	buttonNum = Buttons.size();
+	Buttons.push_back(Button({ width/2, trueHeight }));
+	Buttons[buttonNum].setPosition(x, y + (buttonNum * (height / 7)));
+	Buttons[buttonNum].setFont(TxtFont);
+	Buttons[buttonNum].setString("Down");
+}
+
 backgroundScreen::backgroundScreen(std::string topText, std::vector<std::string> optText) {
 	TxtFont.loadFromFile("font/arial.ttf");
 	title = topText;
