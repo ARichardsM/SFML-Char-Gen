@@ -1533,6 +1533,14 @@ void charGen::stats::adjustMenu(sf::RenderWindow& window, std::vector<statBlock>
                 window.close();
 
             if (event.type == sf::Event::MouseButtonPressed){
+                switch (hoverDisp) {
+                case -1:
+                    break;
+                default:
+                    dispMenu.toggleClick(hoverDisp);
+                    break;
+                }
+
                 switch (hoverOpt) {
                 case -1:
                     break;

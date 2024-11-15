@@ -15,12 +15,17 @@ public:
 
 	float height;
 	float width;
+	bool isClicked = false;
 
 	// Initializer
 	Button(sf::Vector2f size);
 
 	// Determines If The Mouse Is Hovering This Button
 	bool hover(sf::Vector2i& mousePt);
+
+	// Toggle the clicked effect
+	void toggleClick();
+
 	void setString(std::string textString);
 	void setPosition(float x, float y);
 	void setFont(sf::Font& font);
@@ -47,18 +52,13 @@ public:
 // GUI Menu Class
 class ScrollMenu : public Menu {
 public:
-	//std::vector<Button> Buttons;
-	//std::vector<std::string> Options;
-	//sf::Font TxtFont;
+	int optOffset, optSelected;
 
 	// Initializer
 	ScrollMenu(int x, int y, int height, float width, std::vector<std::string> options);
-	//Menu(int x, int y, int height, float width, std::vector<std::string> options, std::vector<int> position);
-
-	// Determines If The Mouse Is Hovering Any Element In The Menu
-	//int hover(sf::Vector2i& mousePt);
-	// Handles Drawing All Parts of the Menu
-	//void draw(sf::RenderWindow& window);
+	
+	// Toggle the clicked effect
+	void toggleClick(int button);
 };
 
 // GUI Selection Window For Background

@@ -24,12 +24,31 @@ bool Button::hover(sf::Vector2i& mousePt) {
 	sf::FloatRect border = box.getGlobalBounds();
 
 	if (border.contains(static_cast<sf::Vector2f>(mousePt))) {
-		box.setOutlineThickness(5);
+		if (!isClicked) {
+			box.setOutlineThickness(5);
+		}
+		
 		return true;
 	}
 
-	box.setOutlineThickness(0);
+	if (!isClicked) {
+		box.setOutlineThickness(0);
+	}
+
 	return false;
+}
+
+void Button::toggleClick() {
+	isClicked = !isClicked;
+
+	if (isClicked) {
+		box.setOutlineThickness(5);
+		box.setOutlineColor(sf::Color::Blue);
+		return;
+	}
+
+	box.setOutlineColor(sf::Color::Red);
+	box.setOutlineThickness(0);
 }
 
 void Button::setString(string textString) {
@@ -154,6 +173,13 @@ ScrollMenu::ScrollMenu(int x, int y, int height, float width, std::vector<std::s
 	Buttons[buttonNum].setPosition(x, y + (buttonNum * (height / 7)));
 	Buttons[buttonNum].setFont(TxtFont);
 	Buttons[buttonNum].setString("Down");
+}
+
+void ScrollMenu::toggleClick(int button) {
+	if ((button == 0) || (button == 6))
+		return;
+
+	Buttons[button].toggleClick();
 }
 
 backgroundScreen::backgroundScreen(std::string topText, std::vector<std::string> optText) {
