@@ -1512,7 +1512,7 @@ void charGen::stats::adjustMenu(sf::RenderWindow& window, std::vector<statBlock>
 
     Menu alpMenu(400, 5, 35, 800, { "A", "B", "C", "D", "E", "F", "G", "H", "I", "J", "K", "L", "M", "N", "O", "P", "Q", "R", "S", "T", "U", "V", "W", "X", "Y", "Z" }, { 26 });
     Menu optMenu(400, 500, 100, 800, { "Increase", "Decrease", "Exit" }, { 3 });
-    ScrollMenu dispMenu(400, 45, 450, 600, { "Increase", "Decrease", "Increase", "Decrease", "Exit" });
+    ScrollMenu dispMenu(400, 45, 450, 600, { "A", "B", "C", "D", "E", "F", "G" });
 
     font.loadFromFile("font/arial.ttf");
 
@@ -1535,6 +1535,12 @@ void charGen::stats::adjustMenu(sf::RenderWindow& window, std::vector<statBlock>
             if (event.type == sf::Event::MouseButtonPressed){
                 switch (hoverDisp) {
                 case -1:
+                    break;
+                case 0:
+                    dispMenu.scroll(true);
+                    break;
+                case 6:
+                    dispMenu.scroll(false);
                     break;
                 default:
                     dispMenu.toggleClick(hoverDisp);

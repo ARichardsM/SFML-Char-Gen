@@ -52,13 +52,15 @@ public:
 // GUI Menu Class
 class ScrollMenu : public Menu {
 public:
-	int optOffset, optSelected;
+	int optSelected = -1, optOffset = 0;
 
 	// Initializer
 	ScrollMenu(int x, int y, int height, float width, std::vector<std::string> options);
 	
 	// Toggle the clicked effect
 	void toggleClick(int button);
+	// Scroll the menu
+	void scroll(bool scrollUp);
 };
 
 // GUI Selection Window For Background

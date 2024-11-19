@@ -151,7 +151,7 @@ ScrollMenu::ScrollMenu(int x, int y, int height, float width, std::vector<std::s
 	Options = options;
 	TxtFont.loadFromFile("font/arial.ttf");
 
-	// 
+	// Create an up button for scolling
 	buttonNum = Buttons.size();
 	Buttons.push_back(Button({ width/2, trueHeight }));
 	Buttons[buttonNum].setPosition(x, y + (buttonNum * (height / 7)));
@@ -167,7 +167,7 @@ ScrollMenu::ScrollMenu(int x, int y, int height, float width, std::vector<std::s
 		Buttons[buttonNum].setString(Options[i]);
 	}
 
-	// 
+	// Create a down button for scolling
 	buttonNum = Buttons.size();
 	Buttons.push_back(Button({ width/2, trueHeight }));
 	Buttons[buttonNum].setPosition(x, y + (buttonNum * (height / 7)));
@@ -176,11 +176,37 @@ ScrollMenu::ScrollMenu(int x, int y, int height, float width, std::vector<std::s
 }
 
 void ScrollMenu::toggleClick(int button) {
-	if ((button == 0) || (button == 6))
-		return;
-
+	optSelected = button;
 	Buttons[button].toggleClick();
 }
+
+void ScrollMenu::scroll(bool scrollUp) {
+	// Adjust the Offset
+	if (scrollUp)
+		optOffset--;
+	else 
+		optOffset++;
+
+	// Check bounds
+	optOffset = min(optOffset, (int)Options.size() - 5);
+	optOffset = max(optOffset, 0);
+
+	// Uncheck the button
+	if (optSelected != -1) {
+		Buttons[optSelected].toggleClick();
+		optSelected = -1;
+	}
+
+	// Adjust the button
+	for (int i = 0; i < 5; i++) {
+		int buttonNum = i + optOffset;
+		Buttons[i + 1].setString(Options[buttonNum]);
+	}
+
+	return;
+}
+
+
 
 backgroundScreen::backgroundScreen(std::string topText, std::vector<std::string> optText) {
 	TxtFont.loadFromFile("font/arial.ttf");
