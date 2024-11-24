@@ -1508,11 +1508,19 @@ void charGen::stats::adjustMenu(sf::RenderWindow& window, std::vector<statBlock>
     string line, linePart;
     vector<string> parts;
     vector<string> opt;
+    
+    // Convert the property list (Vector Statblock to Vector Vector String)
     vector<vector<string>> options;
+    vector<string> optionsDisp;
+    for (statBlock& proper : propList) {
+        options.push_back({ proper.name, to_string(proper.value) });
+        optionsDisp.push_back( proper.name + " " +  to_string(proper.value));
+    }
 
     Menu alpMenu(400, 5, 35, 800, { "A", "B", "C", "D", "E", "F", "G", "H", "I", "J", "K", "L", "M", "N", "O", "P", "Q", "R", "S", "T", "U", "V", "W", "X", "Y", "Z" }, { 26 });
     Menu optMenu(400, 500, 100, 800, { "Increase", "Decrease", "Exit" }, { 3 });
-    ScrollMenu dispMenu(400, 45, 450, 600, { "A", "B", "C", "D", "E", "F", "G" });
+    //ScrollMenu dispMenu(400, 45, 450, 600, { "A", "B", "C", "D", "E", "F", "G" });
+    ScrollMenu dispMenu(400, 45, 450, 600, optionsDisp);
 
     font.loadFromFile("font/arial.ttf");
 
@@ -1544,6 +1552,7 @@ void charGen::stats::adjustMenu(sf::RenderWindow& window, std::vector<statBlock>
                     break;
                 default:
                     dispMenu.toggleClick(hoverDisp);
+                    std::cout << "Option: "  << dispMenu.optSelected + dispMenu.optOffset << "- " << dispMenu.Options[dispMenu.optSelected + dispMenu.optOffset] << "\n";
                     break;
                 }
 
@@ -1575,6 +1584,10 @@ void charGen::stats::adjustMenu(sf::RenderWindow& window, std::vector<statBlock>
         dispMenu.draw(window);
         window.display();
     }
+
+    // Update the property list
+
+
     return;
 }
 

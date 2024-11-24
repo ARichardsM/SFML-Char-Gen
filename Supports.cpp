@@ -164,7 +164,11 @@ ScrollMenu::ScrollMenu(int x, int y, int height, float width, std::vector<std::s
 		Buttons.push_back(Button({ width, trueHeight }));
 		Buttons[buttonNum].setPosition(x, y + (buttonNum * (height / 7)));
 		Buttons[buttonNum].setFont(TxtFont);
-		Buttons[buttonNum].setString(Options[i]);
+	}
+
+	// Add text to the buttons
+	for (int i = 0; i < min(5, (int) Options.size()); i++) {
+		Buttons[i + 1].setString(Options[i]);
 	}
 
 	// Create a down button for scolling
@@ -176,7 +180,7 @@ ScrollMenu::ScrollMenu(int x, int y, int height, float width, std::vector<std::s
 }
 
 void ScrollMenu::toggleClick(int button) {
-	optSelected = button;
+	optSelected = button  - 1;
 	Buttons[button].toggleClick();
 }
 
@@ -193,7 +197,7 @@ void ScrollMenu::scroll(bool scrollUp) {
 
 	// Uncheck the button
 	if (optSelected != -1) {
-		Buttons[optSelected].toggleClick();
+		Buttons[optSelected + 1].toggleClick();
 		optSelected = -1;
 	}
 
