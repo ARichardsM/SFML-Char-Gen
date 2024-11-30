@@ -211,6 +211,23 @@ void ScrollMenu::scroll(bool scrollUp) {
 }
 
 
+void ScrollMenu::draw(sf::RenderWindow& window) {
+	
+	for (int i = 0; i < min(5, (int) Options.size()); i++) {
+		window.draw(Buttons[i+1].box);
+		window.draw(Buttons[i+1].text);
+	}
+
+	if (Options.size() > 5) {
+		window.draw(Buttons[0].box);
+		window.draw(Buttons[0].text);
+
+		window.draw(Buttons[6].box);
+		window.draw(Buttons[6].text);
+	}
+
+	return;
+}
 
 backgroundScreen::backgroundScreen(std::string topText, std::vector<std::string> optText) {
 	TxtFont.loadFromFile("font/arial.ttf");

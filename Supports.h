@@ -61,6 +61,9 @@ public:
 	void toggleClick(int button);
 	// Scroll the menu
 	void scroll(bool scrollUp);
+
+	// Handles Drawing All Parts of the Menu
+	void draw(sf::RenderWindow& window);
 };
 
 // GUI Selection Window For Background
