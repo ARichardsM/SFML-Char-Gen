@@ -180,11 +180,21 @@ ScrollMenu::ScrollMenu(int x, int y, int height, float width, std::vector<std::s
 }
 
 void ScrollMenu::toggleClick(int button) {
-	optSelected = button  - 1;
-	Buttons[button].toggleClick();
+	std::cout << "Button: " << button;
+	if (button - 1 < Options.size()){
+		if (optSelected != -1)
+			Buttons[optSelected + 1].toggleClick();
+
+		optSelected = button  - 1;
+		Buttons[button].toggleClick();
+	}
 }
 
 void ScrollMenu::scroll(bool scrollUp) {
+	// Don't Scroll if there aren't enough options
+	if (Options.size() <= 5)
+		return;
+
 	// Adjust the Offset
 	if (scrollUp)
 		optOffset--;
@@ -202,7 +212,7 @@ void ScrollMenu::scroll(bool scrollUp) {
 	}
 
 	// Adjust the button
-	for (int i = 0; i < 5; i++) {
+	for (int i = 0; i < min(5, (int)Options.size()); i++) {
 		int buttonNum = i + optOffset;
 		Buttons[i + 1].setString(Options[buttonNum]);
 	}

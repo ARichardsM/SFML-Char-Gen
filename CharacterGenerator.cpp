@@ -1552,8 +1552,12 @@ void charGen::stats::adjustMenu(sf::RenderWindow& window, std::vector<statBlock>
                     break;
                 default:
                     dispMenu.toggleClick(hoverDisp);
-                    std::cout << "Option: "  << dispMenu.optSelected + dispMenu.optOffset << "- " << dispMenu.Options[dispMenu.optSelected + dispMenu.optOffset] << "\n";
                     break;
+                }
+
+                if (dispMenu.optSelected != -1){
+                    std::cout << "Option: " << dispMenu.optSelected + dispMenu.optOffset;
+                    std::cout << "- " << dispMenu.Options[dispMenu.optSelected + dispMenu.optOffset] << "\n";
                 }
 
                 switch (hoverOpt) {
