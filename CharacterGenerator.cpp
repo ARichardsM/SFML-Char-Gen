@@ -1541,6 +1541,11 @@ void charGen::stats::adjustMenu(sf::RenderWindow& window, std::vector<statBlock>
                 window.close();
 
             if (event.type == sf::Event::MouseButtonPressed){
+                // Return to the previous page if exit is clicked
+                if (hoverOpt == 2)
+                    return;
+
+                // Handle scroll menu options
                 switch (hoverDisp) {
                 case -1:
                     break;
@@ -1560,23 +1565,31 @@ void charGen::stats::adjustMenu(sf::RenderWindow& window, std::vector<statBlock>
                     std::cout << "- " << dispMenu.Options[dispMenu.optSelected + dispMenu.optOffset] << "\n";
                 }
 
-                switch (hoverOpt) {
-                case -1:
-                    break;
-                case 0:
-                    statVal++;
-                    if (statVal > 5) {
-                        statVal = 5;
+                
+                // Only if an option is currently selected
+                if (dispMenu.optSelected != -1) {
+                    // Handle increasing and decreasing values
+                    switch (hoverOpt) {
+                    case -1:
+                        break;
+                    case 0:
+                        statVal++;
+                        optionsDisp[0] = "Z";
+                        dispMenu.swapOptions(optionsDisp);
+                        std::cout << "Increase";
+                        if (statVal > 5) {
+                            statVal = 5;
+                        }
+                        break;
+                    case 1:
+                        statVal--;
+                        std::cout << "Decrease";
+                        if (statVal < 0) {
+                            statVal = 0;
+                        }
+                        break;
                     }
-                    break;
-                case 1:
-                    statVal--;
-                    if (statVal < 0) {
-                        statVal = 0;
-                    }
-                    break;
-                case 2:
-                    return;
+
                 }
             }
         }

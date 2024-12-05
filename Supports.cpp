@@ -211,15 +211,26 @@ void ScrollMenu::scroll(bool scrollUp) {
 		optSelected = -1;
 	}
 
-	// Adjust the button
-	for (int i = 0; i < min(5, (int)Options.size()); i++) {
-		int buttonNum = i + optOffset;
-		Buttons[i + 1].setString(Options[buttonNum]);
-	}
+	// Adjust the buttons
+	updateDisplay();
 
 	return;
 }
 
+void ScrollMenu::updateDisplay() {
+	for (int i = 0; i < min(5, (int)Options.size()); i++) {
+		int buttonNum = i + optOffset;
+		Buttons[i + 1].setString(Options[buttonNum]);
+	}
+}
+
+void ScrollMenu::swapOptions(std::vector<std::string> newOptions) {
+	// Update the options
+	Options = newOptions;
+
+	// Adjust the buttons
+	updateDisplay();
+}
 
 void ScrollMenu::draw(sf::RenderWindow& window) {
 	

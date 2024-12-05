@@ -51,6 +51,10 @@ public:
 
 // GUI Menu Class
 class ScrollMenu : public Menu {
+private:
+	// Adjust the available buttons
+	void updateDisplay();
+
 public:
 	int optSelected = -1, optOffset = 0;
 
@@ -61,6 +65,8 @@ public:
 	void toggleClick(int button);
 	// Scroll the menu
 	void scroll(bool scrollUp);
+	// Swap the options
+	void swapOptions(std::vector<std::string> newOptions);
 
 	// Handles Drawing All Parts of the Menu
 	void draw(sf::RenderWindow& window);
