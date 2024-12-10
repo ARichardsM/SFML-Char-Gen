@@ -1519,7 +1519,6 @@ void charGen::stats::adjustMenu(sf::RenderWindow& window, std::vector<statBlock>
 
     Menu alpMenu(400, 5, 35, 800, { "A", "B", "C", "D", "E", "F", "G", "H", "I", "J", "K", "L", "M", "N", "O", "P", "Q", "R", "S", "T", "U", "V", "W", "X", "Y", "Z" }, { 26 });
     Menu optMenu(400, 500, 100, 800, { "Increase", "Decrease", "Exit" }, { 3 });
-    //ScrollMenu dispMenu(400, 45, 450, 600, { "A", "B", "C", "D", "E", "F", "G" });
     ScrollMenu dispMenu(400, 45, 450, 600, optionsDisp);
 
     font.loadFromFile("font/arial.ttf");
@@ -1568,25 +1567,37 @@ void charGen::stats::adjustMenu(sf::RenderWindow& window, std::vector<statBlock>
                 
                 // Only if an option is currently selected
                 if (dispMenu.optSelected != -1) {
+                    // Variables for the option selected
+                    int optSelect = dispMenu.optSelected;
+                    int optVal = stoi(options[optSelect][1]);
+
                     // Handle increasing and decreasing values
                     switch (hoverOpt) {
                     case -1:
                         break;
                     case 0:
-                        statVal++;
-                        optionsDisp[0] = "Z";
+                        // Ensure options are 5 or less
+                        if (optVal < 5)
+                            optVal++;
+
+                        // Update the option variables
+                        options[optSelect][1] = to_string(optVal);
+                        optionsDisp[optSelect] = options[optSelect][0] + " " + options[optSelect][1];
+
+                        // Adjust the display
                         dispMenu.swapOptions(optionsDisp);
-                        std::cout << "Increase";
-                        if (statVal > 5) {
-                            statVal = 5;
-                        }
                         break;
                     case 1:
-                        statVal--;
-                        std::cout << "Decrease";
-                        if (statVal < 0) {
-                            statVal = 0;
-                        }
+                        // Ensure options are 0 or more
+                        if (optVal > 0)
+                            optVal--;
+
+                        // Update the option variables
+                        options[optSelect][1] = to_string(optVal);
+                        optionsDisp[optSelect] = options[optSelect][0] + " " + options[optSelect][1];
+
+                        // Adjust the display
+                        dispMenu.swapOptions(optionsDisp);
                         break;
                     }
 
