@@ -180,7 +180,6 @@ ScrollMenu::ScrollMenu(int x, int y, int height, float width, std::vector<std::s
 }
 
 void ScrollMenu::toggleClick(int button) {
-	std::cout << "Button: " << button;
 	if (button - 1 < Options.size()){
 		if (optSelected != -1)
 			Buttons[optSelected + 1].toggleClick();

@@ -1266,7 +1266,7 @@ std::vector<std::string> charGen::backgroundMenu(sf::RenderWindow& window, std::
 void charGen::statsMenu(sf::RenderWindow& window, std::vector<statBlock>& abilityList, std::vector<statBlock>& weaknessList) {
     // Prepare the screen
     Menu newMenu(400, 400, 200, 600, 
-        { "Add", "Add", "Remove", "Remove", "Main Menu"},
+        { "New", "New", "Adjust", "Adjust", "Main Menu"},
         { 2, 2, 1 });
 
     std::vector<std::vector<std::string>> ListA;
@@ -1502,8 +1502,6 @@ void charGen::stats::adjustMenu(sf::RenderWindow& window, std::vector<statBlock>
     int listPos = 0;
     int alphaPicked = 0;
     int selection = 0;
-    string alpha[] = { "A", "B", "C", "D", "E", "F", "G", "H", "I", "J", "K", "L", "M", "N", "O", "P", "Q", "R", "S", "T", "U", "V", "W", "X", "Y", "Z" };
-    string crop = "";
 
     string line, linePart;
     vector<string> parts;
@@ -1517,11 +1515,12 @@ void charGen::stats::adjustMenu(sf::RenderWindow& window, std::vector<statBlock>
         optionsDisp.push_back( proper.name + " " +  to_string(proper.value));
     }
 
-    Menu alpMenu(400, 5, 35, 800, { "A", "B", "C", "D", "E", "F", "G", "H", "I", "J", "K", "L", "M", "N", "O", "P", "Q", "R", "S", "T", "U", "V", "W", "X", "Y", "Z" }, { 26 });
     Menu optMenu(400, 500, 100, 800, { "Increase", "Decrease", "Exit" }, { 3 });
-    ScrollMenu dispMenu(400, 45, 450, 600, optionsDisp);
+    ScrollMenu dispMenu(400, 25, 450, 600, optionsDisp);
 
     font.loadFromFile("font/arial.ttf");
+
+    bool exitEvent = false;
 
     while (window.isOpen())
     {
@@ -1533,7 +1532,6 @@ void charGen::stats::adjustMenu(sf::RenderWindow& window, std::vector<statBlock>
 
         while (window.pollEvent(event)) {
             hoverOpt = optMenu.hover(mousePos);
-            hoverAlp = alpMenu.hover(mousePos);
             hoverDisp = dispMenu.hover(mousePos);
 
             if (event.type == sf::Event::Closed)
@@ -1542,7 +1540,7 @@ void charGen::stats::adjustMenu(sf::RenderWindow& window, std::vector<statBlock>
             if (event.type == sf::Event::MouseButtonPressed){
                 // Return to the previous page if exit is clicked
                 if (hoverOpt == 2)
-                    return;
+                    exitEvent = true;
 
                 // Handle scroll menu options
                 switch (hoverDisp) {
@@ -1559,12 +1557,6 @@ void charGen::stats::adjustMenu(sf::RenderWindow& window, std::vector<statBlock>
                     break;
                 }
 
-                if (dispMenu.optSelected != -1){
-                    std::cout << "Option: " << dispMenu.optSelected + dispMenu.optOffset;
-                    std::cout << "- " << dispMenu.Options[dispMenu.optSelected + dispMenu.optOffset] << "\n";
-                }
-
-                
                 // Only if an option is currently selected
                 if (dispMenu.optSelected != -1) {
                     // Variables for the option selected
@@ -1608,13 +1600,21 @@ void charGen::stats::adjustMenu(sf::RenderWindow& window, std::vector<statBlock>
         // Draw the window
         window.clear();
         optMenu.draw(window);
-        alpMenu.draw(window);
         dispMenu.draw(window);
         window.display();
+
+        // Break window open loop on exit
+        if (exitEvent)
+            break;
     }
 
     // Update the property list
-
+    for (int i = propList.size() - 1; i >= 0; i--) {
+        if (stoi(options[i][1]) != 0)
+            propList[i].value = stoi(options[i][1]);
+        else
+            propList.erase(propList.begin());
+    }
 
     return;
 }
