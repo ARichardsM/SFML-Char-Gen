@@ -1342,7 +1342,7 @@ void charGen::statsMenu(sf::RenderWindow& window, std::vector<statBlock>& abilit
                 case 0:
                     // Add Ability Button
                     cout << "AA\n";
-                    charGen::stats::addMenu(window, abilityList, "Abilities");
+                    charGen::stats::addMenu(window, abilityList, true);
                     charGen::stats::reconfigDisplay(font, abilityList, actAbil);
                     for (int i = 0; i < actAbil.size(); i++) {
                         actAbil[i].setPosition(225.f, 40 + (22 * i));
@@ -1352,7 +1352,7 @@ void charGen::statsMenu(sf::RenderWindow& window, std::vector<statBlock>& abilit
                 case 1:
                     // Add Weakness Button
                     cout << "AW\n";
-                    charGen::stats::addMenu(window, weaknessList, "Weakness");
+                    charGen::stats::addMenu(window, weaknessList, false);
                     charGen::stats::reconfigDisplay(font, weaknessList, actWeak);
                     for (int i = 0; i < actWeak.size(); i++) {
                         actWeak[i].setPosition(575.f, 40 + (22 * i));
@@ -1482,7 +1482,7 @@ void charGen::statsMenu(sf::RenderWindow& window, std::vector<statBlock>& abilit
     return;
 }
 
-void charGen::stats::addMenu(sf::RenderWindow& window, std::vector<statBlock>& propList, const string& file) {
+void charGen::stats::addMenu(sf::RenderWindow& window, std::vector<statBlock>& propList, const bool& forAbility) {
     statBlock newStat;
 
     newStat.description = "A";
@@ -1490,22 +1490,295 @@ void charGen::stats::addMenu(sf::RenderWindow& window, std::vector<statBlock>& p
     newStat.value = 3;
 
     propList.push_back(newStat);
-    return;
-}
 
-void charGen::stats::adjustMenu(sf::RenderWindow& window, std::vector<statBlock>& propList) {
+    // Declare Variables
     sf::Vector2<int> mousePos;
+    sf::Event event;
+
+    int hoverOpt, hoverDisp;
+    bool loopFunc = window.isOpen();
+
+
+    vector<Button> optionsButtons;
+    vector<Button> selectionButtons;
+    vector<Button> optionArrowButtons;
+    vector<Button> alphabetButtons;
+
     sf::Font font;
+    font.loadFromFile("font/arial.ttf");
     sf::FloatRect temp;
 
+    vector<sf::Text> statText;
+    vector<sf::Text> bodyText;
     int statVal = 1;
     int listPos = 0;
     int alphaPicked = 0;
     int selection = 0;
+    string text[] = { "A", "B", "C", "D", "E", "F", "G", "H", "I", "J", "K", "L", "M", "N", "O", "P", "Q", "R", "S", "T", "U", "V", "W", "X", "Y", "Z" };
+    string crop = "";
+
+    ifstream fileIn;
+
+    switch (forAbility) {
+    case(true):
+        fileIn.open("stats/Abilities.txt");
+        break;
+    case(false):
+        fileIn.open("stats/Weaknesses.txt");
+        break;
+    }
 
     string line, linePart;
     vector<string> parts;
     vector<string> opt;
+    vector<string> optionNames;
+    vector<vector<string>> options;
+    vector<vector<string>> activeOpts;
+
+    while (getline(fileIn, line)) {
+        istringstream iss(line);
+        while (getline(iss, linePart, '|')) {
+            parts.push_back(linePart);
+        }
+        optionNames.push_back(parts[0]);
+        options.push_back({ parts[0], parts[1] });
+        activeOpts.push_back({ parts[0], parts[1] });
+        parts.clear();
+    }
+
+    // Create Menus
+    Menu optMenu(400, 500, 100, 800, { "Increase", "Decrease", "Add", "Exit" }, { 4 });
+    ScrollMenu dispMenu(400, 25, 400, 600, optionNames);
+
+    // Create On-Screen Text
+    sf::Text onScreenText;
+    onScreenText.setCharacterSize(45);
+    onScreenText.setFont(font);
+    onScreenText.setFillColor(sf::Color::Red);
+    onScreenText.setString("At Level: X");
+    temp = onScreenText.getLocalBounds();
+    onScreenText.setOrigin(temp.left + temp.width / 2.0f, temp.height / 2.0f);
+    onScreenText.setPosition(400, 450);
+
+    // Loop the menu
+    while (loopFunc)
+    {
+        loopFunc = window.isOpen();
+        mousePos = sf::Mouse::getPosition(window);
+
+        while (window.pollEvent(event)) {
+            // Pull hover values
+            hoverOpt = optMenu.hover(mousePos);
+            hoverDisp = dispMenu.hover(mousePos);
+
+            // Window Close
+            if (event.type == sf::Event::Closed)
+                window.close();
+
+            if (event.type == sf::Event::MouseButtonPressed) {
+                // Return to the previous page if exit is clicked
+                if (hoverOpt == 3)
+                    loopFunc = false;
+            }
+        }
+
+        // Draw the window
+        window.clear();
+        optMenu.draw(window);
+        dispMenu.draw(window);
+        window.draw(onScreenText);
+        window.display();
+    }
+
+    /*
+
+    for (int i = 0; i < 26; i++) {
+        alphabetButtons.push_back(Button(sf::Vector2f(25, 25)));
+    }
+
+    for (int i = 0; i < 5; i++) {
+        optionsButtons.push_back(Button(sf::Vector2f(700, 50)));
+    }
+
+    for (int i = 0; i < 4; i++) {
+        selectionButtons.push_back(Button(sf::Vector2f(100, 50)));
+    }
+
+    for (int i = 0; i < 2; i++) {
+        optionArrowButtons.push_back(Button(sf::Vector2f(50, 25)));
+        statText.push_back(sf::Text());
+    }
+
+    font.loadFromFile("font/arial.ttf");
+
+    for (int i = 0; i < 26; i++) {
+        alphabetButtons[i].text.setFont(font);
+        alphabetButtons[i].setString(text[i]);
+        alphabetButtons[i].setPosition(17.5f + 7.5f + (30.0f * i), 17.5f);
+    }
+
+    for (int i = 0; i < 2; i++) {
+        optionArrowButtons[i].text.setFont(font);
+        optionArrowButtons[i].setPosition(400, 22.5f + alphabetButtons[1].height + (305 * i));
+        statText[i].setCharacterSize(24);
+        statText[i].setFont(font);
+        statText[i].setFillColor(sf::Color::Cyan);
+    }
+
+    optionArrowButtons[0].setString("^");
+    optionArrowButtons[1].setString("v");
+
+    for (int i = 0; i < 5; i++) {
+        optionsButtons[i].text.setFont(font);
+        optionsButtons[i].setPosition(400, 40.0f + alphabetButtons[1].height + optionArrowButtons[1].height + (55 * i));
+    }
+
+    for (int i = 0; i < 4; i++) {
+        selectionButtons[i].text.setFont(font);
+        selectionButtons[i].setPosition(100 + (200 * i), 570.0f);
+    }
+
+    selectionButtons[0].setString("Higher");
+    selectionButtons[1].setString("Lower");
+    selectionButtons[2].setString("Accept");
+    selectionButtons[3].setString("Cancel");
+
+    while (window.isOpen())
+    {
+        mousePos = sf::Mouse::getPosition(window);
+
+        sf::Event event;
+        while (window.pollEvent(event))
+        {
+            if (event.type == sf::Event::Closed)
+                window.close();
+
+            for (int i = 0; i < 26; i++) {
+                if (alphabetButtons[i].hover(mousePos) && event.type == sf::Event::MouseButtonPressed) {
+                    listPos = 0;
+                    crop = text[i];
+                    activeOpts.clear();
+                    for (int j = 0; j < options.size(); j++) {
+                        if (crop.front() == options[j][0].front()) {
+                            activeOpts.push_back(options[j]);
+                            alphaPicked = j;
+                        }
+                    }
+                    alphaPicked = alphaPicked - activeOpts.size() + 1;
+                }
+            }
+
+            if (optionArrowButtons[1].hover(mousePos) && event.type == sf::Event::MouseButtonPressed) {
+                listPos++;
+                int math = activeOpts.size() - optionsButtons.size();
+                if (listPos > math) {
+                    listPos = max(math, 0);
+                }
+            }
+            else if (optionArrowButtons[0].hover(mousePos) && event.type == sf::Event::MouseButtonPressed) {
+                listPos--;
+                if (listPos < 1) {
+                    listPos = 0;
+                }
+            }
+
+            if (selectionButtons[0].hover(mousePos) && event.type == sf::Event::MouseButtonPressed) {
+                int cap;
+                if (type) {
+                    cap = 5;
+                }
+                else {
+                    cap = 3;
+                }
+
+                statVal++;
+                if (statVal > cap) {
+                    statVal = cap;
+                }
+            }
+            else if (selectionButtons[1].hover(mousePos) && event.type == sf::Event::MouseButtonPressed) {
+                statVal--;
+                if (statVal < 1) {
+                    statVal = 1;
+                }
+            }
+            else if (selectionButtons[2].hover(mousePos) && event.type == sf::Event::MouseButtonPressed) {
+                vector<string> returnedContent;
+                returnedContent.push_back(options[selection][0]);
+                returnedContent.push_back(to_string(statVal));
+                return returnedContent;
+            }
+            else if (selectionButtons[3].hover(mousePos) && event.type == sf::Event::MouseButtonPressed) {
+                vector<string> returnedContent;
+                return returnedContent;
+            }
+
+            for (int i = 0; i < min(int(activeOpts.size()), 5); i++) {
+                if (optionsButtons[i].hover(mousePos) && event.type == sf::Event::MouseButtonPressed) {
+                    selection = alphaPicked + i + listPos;
+                }
+            }
+        }
+
+        // Draw the window
+        window.clear();
+
+        for (int i = 0; i < 26; i++) {
+            window.draw(alphabetButtons[i].box);
+            window.draw(alphabetButtons[i].text);
+        }
+
+        for (int i = 0; i < 2; i++) {
+            window.draw(optionArrowButtons[i].box);
+            window.draw(optionArrowButtons[i].text);
+        }
+
+        for (int i = 0; i < 4; i++) {
+            window.draw(selectionButtons[i].box);
+            window.draw(selectionButtons[i].text);
+        }
+
+        for (int i = 0; i < min(int(activeOpts.size()), 5); i++) {
+            optionsButtons[i].setString(activeOpts[i + listPos][0]);
+            window.draw(optionsButtons[i].box);
+            window.draw(optionsButtons[i].text);
+        }
+
+        statText[0].setString(options[selection][0] + " Level " + to_string(statVal));
+        swapSelection(options[selection][1], bodyText);
+        statText[1].setString(options[selection][1]);
+
+        for (int i = 0; i < bodyText.size(); i++) {
+            bodyText[i].setCharacterSize(20);
+            bodyText[i].setFont(font);
+            bodyText[i].setFillColor(sf::Color::Cyan);
+            temp = bodyText[i].getLocalBounds();
+            bodyText[i].setOrigin(temp.left + temp.width / 2.0f, 0);
+            bodyText[i].setPosition(400, 400 + (25 * i));
+            window.draw(bodyText[i]);
+        }
+
+
+        for (int i = 0; i < 1; i++) {
+            temp = statText[i].getLocalBounds();
+            statText[i].setOrigin(temp.left + temp.width / 2.0f, 0);
+            statText[i].setPosition(400, 370 + (30 * i));
+            window.draw(statText[i]);
+        }
+
+        window.display();
+    }
+    */
+    return;
+}
+
+void charGen::stats::adjustMenu(sf::RenderWindow& window, std::vector<statBlock>& propList) {
+    // Declare Variables
+    sf::Vector2<int> mousePos;
+    sf::Event event;
+
+    int hoverOpt, hoverDisp;
+    bool loopFunc = window.isOpen();
     
     // Convert the property list (Vector Statblock to Vector Vector String)
     vector<vector<string>> options;
@@ -1515,32 +1788,29 @@ void charGen::stats::adjustMenu(sf::RenderWindow& window, std::vector<statBlock>
         optionsDisp.push_back( proper.name + " " +  to_string(proper.value));
     }
 
+    // Create Menus
     Menu optMenu(400, 500, 100, 800, { "Increase", "Decrease", "Exit" }, { 3 });
     ScrollMenu dispMenu(400, 25, 450, 600, optionsDisp);
 
-    font.loadFromFile("font/arial.ttf");
-
-    bool exitEvent = false;
-
-    while (window.isOpen())
+    // Loop the menu
+    while (loopFunc)
     {
-        
+        loopFunc = window.isOpen();
         mousePos = sf::Mouse::getPosition(window);
 
-        sf::Event event;
-        int hoverOpt, hoverAlp, hoverDisp;
-
         while (window.pollEvent(event)) {
+            // Pull hover values
             hoverOpt = optMenu.hover(mousePos);
             hoverDisp = dispMenu.hover(mousePos);
 
+            // Window Close
             if (event.type == sf::Event::Closed)
                 window.close();
 
             if (event.type == sf::Event::MouseButtonPressed){
                 // Return to the previous page if exit is clicked
                 if (hoverOpt == 2)
-                    exitEvent = true;
+                    loopFunc = false;
 
                 // Handle scroll menu options
                 switch (hoverDisp) {
@@ -1602,10 +1872,6 @@ void charGen::stats::adjustMenu(sf::RenderWindow& window, std::vector<statBlock>
         optMenu.draw(window);
         dispMenu.draw(window);
         window.display();
-
-        // Break window open loop on exit
-        if (exitEvent)
-            break;
     }
 
     // Update the property list
@@ -1615,7 +1881,6 @@ void charGen::stats::adjustMenu(sf::RenderWindow& window, std::vector<statBlock>
         else
             propList.erase(propList.begin());
     }
-
     return;
 }
 

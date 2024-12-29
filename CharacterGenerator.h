@@ -14,7 +14,7 @@ namespace charGen {
 	void statsMenu(sf::RenderWindow& window, std::vector<statBlock>& abilityList, std::vector<statBlock>& weaknessList);
 
 	namespace stats {
-		void addMenu(sf::RenderWindow& window, std::vector<statBlock>& propList, const std::string& file);
+		void addMenu(sf::RenderWindow& window, std::vector<statBlock>& propList, const bool& forAbility);
 		void adjustMenu(sf::RenderWindow& window, std::vector<statBlock>& propList);
 
 		// Adjust a display text list based on a statBlock list
