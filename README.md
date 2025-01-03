@@ -1,27 +1,26 @@
-# SFML Menu Testing
- ## Description
- The SFML Tabletop Scripts are a set of scripts designed to assist with tabletop character creation.
- This project is primarily to practise GUI design and the SFML API library.
+# Overview
+This repository contains the SFML Tabletop Scripts, a collection of tools aimed at simplifying entity creation and connection tracking.
+The project serves as both a functional toolkit and an exercise in GUI design and the SFML API library.
 
 
-| Name                      | Purpose                                                                           |
-|---------------------------|-----------------------------------------------------------------------------------|
-| Source.cpp                | Main script, pulls necessary files and loops while the script is in use.          |
-|---------------------------|-----------------------------------------------------------------------------------|
-| Support.h                 | Headers for General.cpp.                                                          |
-| Support.cpp               | Contains general modular functions that can be implemented in multiple projects.  |
-|---------------------------|-----------------------------------------------------------------------------------|
-| BondTracker.h             | Headers for Tracker CPP Files.                                                    |
-| BondTracker.cpp           | Contains scripts for the entity class.                                            |
-|---------------------------|-----------------------------------------------------------------------------------|
-| CharacterGenerator.h      | Contains scripts for the character class.                                         |
-| CharacterGenerator.cpp    | Contains scripts for the unit class.                                              |
+| File Name                 | Description                                                                                |
+|---------------------------|--------------------------------------------------------------------------------------------|
+| Source.cpp                | The main script responsible for loading required files and managing the application loop.  |
+|---------------------------|--------------------------------------------------------------------------------------------|
+| Support.h                 | Headers for *Support.cpp*.                                                                 |
+| Support.cpp               | Includes reusable and modular utility functions.                                           |
+|---------------------------|--------------------------------------------------------------------------------------------|
+| BondTracker.h             | Headers for *BondTracker.cpp*.                                                             |
+| BondTracker.cpp           | Contains scripts that handles connections between entities.                                |
+|---------------------------|--------------------------------------------------------------------------------------------|
+| CharacterGenerator.h      | Headers for *CharacterGenerator.cpp*.                                                      |
+| CharacterGenerator.cpp    | Contains scripts for entity generation.                                                    |
 
-## Current
- - [ ] Refactor Character Generator
+# Current Objectives
+ - [ ] Refactor the *Character Generator* module.
 
-## Backlog
-- [ ] Refactor Bond Tracker
-- [ ] Prepare for Next Steps
+# Future Goals
+- [ ] Refactor the *Bond Tracker* module.
 
-## TBD
+# To Be Decided (TBD)
+- [ ] Pending additional features and priorities.
