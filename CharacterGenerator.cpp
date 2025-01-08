@@ -1566,6 +1566,8 @@ void charGen::stats::addMenu(sf::RenderWindow& window, std::vector<statBlock>& p
         loopFunc = window.isOpen();
         mousePos = sf::Mouse::getPosition(window);
 
+        onScreenText.setString("At Level: " + to_string(statVal));
+
         while (window.pollEvent(event)) {
             // Pull hover values
             hoverOpt = optMenu.hover(mousePos);
@@ -1576,9 +1578,44 @@ void charGen::stats::addMenu(sf::RenderWindow& window, std::vector<statBlock>& p
                 window.close();
 
             if (event.type == sf::Event::MouseButtonPressed) {
-                // Return to the previous page if exit is clicked
-                if (hoverOpt == 3)
+                // Handle menu options
+                switch (hoverOpt) {
+                case 0:                             // Increase the stat value
+                    statVal = min(statVal + 1, 5);
+                    break;
+                case 1:                             // Decrease the stat value
+                    statVal = max(statVal - 1, 1);
+                    break;
+                case 2:                             // Return to the previous page
+                    if (dispMenu.optSelected != -1) {
+                        newStat.description = "A";
+                        newStat.name = options[1][0];
+                        newStat.value = statVal;
+
+                        propList.push_back(newStat);
+                        loopFunc = false;
+                    }
+                    
+                    break;
+                case 3:                             // Return to the previous page if exit is clicked
                     loopFunc = false;
+                    break;
+                }
+
+                // Handle scroll menu options
+                switch (hoverDisp) {
+                case -1:
+                    break;
+                case 0:
+                    dispMenu.scroll(true);
+                    break;
+                case 6:
+                    dispMenu.scroll(false);
+                    break;
+                default:
+                    dispMenu.toggleClick(hoverDisp);
+                    break;
+                }
             }
         }
 
