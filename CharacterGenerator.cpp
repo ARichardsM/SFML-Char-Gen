@@ -1483,42 +1483,22 @@ void charGen::statsMenu(sf::RenderWindow& window, std::vector<statBlock>& abilit
 }
 
 void charGen::stats::addMenu(sf::RenderWindow& window, std::vector<statBlock>& propList, const bool& forAbility) {
-    statBlock newStat;
-
-    newStat.description = "A";
-    newStat.name = "A";
-    newStat.value = 3;
-
-    propList.push_back(newStat);
-
     // Declare Variables
+    statBlock newStat;
     sf::Vector2<int> mousePos;
     sf::Event event;
 
     int hoverOpt, hoverDisp;
     bool loopFunc = window.isOpen();
 
-
-    vector<Button> optionsButtons;
-    vector<Button> selectionButtons;
-    vector<Button> optionArrowButtons;
-    vector<Button> alphabetButtons;
-
     sf::Font font;
     font.loadFromFile("font/arial.ttf");
     sf::FloatRect temp;
 
-    vector<sf::Text> statText;
-    vector<sf::Text> bodyText;
     int statVal = 1;
-    int listPos = 0;
-    int alphaPicked = 0;
-    int selection = 0;
-    string text[] = { "A", "B", "C", "D", "E", "F", "G", "H", "I", "J", "K", "L", "M", "N", "O", "P", "Q", "R", "S", "T", "U", "V", "W", "X", "Y", "Z" };
-    string crop = "";
 
+    // Determine input file
     ifstream fileIn;
-
     switch (forAbility) {
     case(true):
         fileIn.open("stats/Abilities.txt");
@@ -1528,12 +1508,11 @@ void charGen::stats::addMenu(sf::RenderWindow& window, std::vector<statBlock>& p
         break;
     }
 
+    // Pull data from file
     string line, linePart;
     vector<string> parts;
-    vector<string> opt;
     vector<string> optionNames;
     vector<vector<string>> options;
-    vector<vector<string>> activeOpts;
 
     while (getline(fileIn, line)) {
         istringstream iss(line);
@@ -1542,7 +1521,6 @@ void charGen::stats::addMenu(sf::RenderWindow& window, std::vector<statBlock>& p
         }
         optionNames.push_back(parts[0]);
         options.push_back({ parts[0], parts[1] });
-        activeOpts.push_back({ parts[0], parts[1] });
         parts.clear();
     }
 
@@ -1586,10 +1564,11 @@ void charGen::stats::addMenu(sf::RenderWindow& window, std::vector<statBlock>& p
                 case 1:                             // Decrease the stat value
                     statVal = max(statVal - 1, 1);
                     break;
-                case 2:                             // Return to the previous page
+                case 2:                             // Add stat and return to the previous page
                     if (dispMenu.optSelected != -1) {
-                        newStat.description = "A";
-                        newStat.name = options[1][0];
+                        int selectedStat = dispMenu.optSelected + dispMenu.optOffset;
+                        newStat.description = options[selectedStat][1];
+                        newStat.name = options[selectedStat][0];
                         newStat.value = statVal;
 
                         propList.push_back(newStat);
@@ -1597,7 +1576,7 @@ void charGen::stats::addMenu(sf::RenderWindow& window, std::vector<statBlock>& p
                     }
                     
                     break;
-                case 3:                             // Return to the previous page if exit is clicked
+                case 3:                             // Return to the previous page
                     loopFunc = false;
                     break;
                 }
@@ -1627,185 +1606,6 @@ void charGen::stats::addMenu(sf::RenderWindow& window, std::vector<statBlock>& p
         window.display();
     }
 
-    /*
-
-    for (int i = 0; i < 26; i++) {
-        alphabetButtons.push_back(Button(sf::Vector2f(25, 25)));
-    }
-
-    for (int i = 0; i < 5; i++) {
-        optionsButtons.push_back(Button(sf::Vector2f(700, 50)));
-    }
-
-    for (int i = 0; i < 4; i++) {
-        selectionButtons.push_back(Button(sf::Vector2f(100, 50)));
-    }
-
-    for (int i = 0; i < 2; i++) {
-        optionArrowButtons.push_back(Button(sf::Vector2f(50, 25)));
-        statText.push_back(sf::Text());
-    }
-
-    font.loadFromFile("font/arial.ttf");
-
-    for (int i = 0; i < 26; i++) {
-        alphabetButtons[i].text.setFont(font);
-        alphabetButtons[i].setString(text[i]);
-        alphabetButtons[i].setPosition(17.5f + 7.5f + (30.0f * i), 17.5f);
-    }
-
-    for (int i = 0; i < 2; i++) {
-        optionArrowButtons[i].text.setFont(font);
-        optionArrowButtons[i].setPosition(400, 22.5f + alphabetButtons[1].height + (305 * i));
-        statText[i].setCharacterSize(24);
-        statText[i].setFont(font);
-        statText[i].setFillColor(sf::Color::Cyan);
-    }
-
-    optionArrowButtons[0].setString("^");
-    optionArrowButtons[1].setString("v");
-
-    for (int i = 0; i < 5; i++) {
-        optionsButtons[i].text.setFont(font);
-        optionsButtons[i].setPosition(400, 40.0f + alphabetButtons[1].height + optionArrowButtons[1].height + (55 * i));
-    }
-
-    for (int i = 0; i < 4; i++) {
-        selectionButtons[i].text.setFont(font);
-        selectionButtons[i].setPosition(100 + (200 * i), 570.0f);
-    }
-
-    selectionButtons[0].setString("Higher");
-    selectionButtons[1].setString("Lower");
-    selectionButtons[2].setString("Accept");
-    selectionButtons[3].setString("Cancel");
-
-    while (window.isOpen())
-    {
-        mousePos = sf::Mouse::getPosition(window);
-
-        sf::Event event;
-        while (window.pollEvent(event))
-        {
-            if (event.type == sf::Event::Closed)
-                window.close();
-
-            for (int i = 0; i < 26; i++) {
-                if (alphabetButtons[i].hover(mousePos) && event.type == sf::Event::MouseButtonPressed) {
-                    listPos = 0;
-                    crop = text[i];
-                    activeOpts.clear();
-                    for (int j = 0; j < options.size(); j++) {
-                        if (crop.front() == options[j][0].front()) {
-                            activeOpts.push_back(options[j]);
-                            alphaPicked = j;
-                        }
-                    }
-                    alphaPicked = alphaPicked - activeOpts.size() + 1;
-                }
-            }
-
-            if (optionArrowButtons[1].hover(mousePos) && event.type == sf::Event::MouseButtonPressed) {
-                listPos++;
-                int math = activeOpts.size() - optionsButtons.size();
-                if (listPos > math) {
-                    listPos = max(math, 0);
-                }
-            }
-            else if (optionArrowButtons[0].hover(mousePos) && event.type == sf::Event::MouseButtonPressed) {
-                listPos--;
-                if (listPos < 1) {
-                    listPos = 0;
-                }
-            }
-
-            if (selectionButtons[0].hover(mousePos) && event.type == sf::Event::MouseButtonPressed) {
-                int cap;
-                if (type) {
-                    cap = 5;
-                }
-                else {
-                    cap = 3;
-                }
-
-                statVal++;
-                if (statVal > cap) {
-                    statVal = cap;
-                }
-            }
-            else if (selectionButtons[1].hover(mousePos) && event.type == sf::Event::MouseButtonPressed) {
-                statVal--;
-                if (statVal < 1) {
-                    statVal = 1;
-                }
-            }
-            else if (selectionButtons[2].hover(mousePos) && event.type == sf::Event::MouseButtonPressed) {
-                vector<string> returnedContent;
-                returnedContent.push_back(options[selection][0]);
-                returnedContent.push_back(to_string(statVal));
-                return returnedContent;
-            }
-            else if (selectionButtons[3].hover(mousePos) && event.type == sf::Event::MouseButtonPressed) {
-                vector<string> returnedContent;
-                return returnedContent;
-            }
-
-            for (int i = 0; i < min(int(activeOpts.size()), 5); i++) {
-                if (optionsButtons[i].hover(mousePos) && event.type == sf::Event::MouseButtonPressed) {
-                    selection = alphaPicked + i + listPos;
-                }
-            }
-        }
-
-        // Draw the window
-        window.clear();
-
-        for (int i = 0; i < 26; i++) {
-            window.draw(alphabetButtons[i].box);
-            window.draw(alphabetButtons[i].text);
-        }
-
-        for (int i = 0; i < 2; i++) {
-            window.draw(optionArrowButtons[i].box);
-            window.draw(optionArrowButtons[i].text);
-        }
-
-        for (int i = 0; i < 4; i++) {
-            window.draw(selectionButtons[i].box);
-            window.draw(selectionButtons[i].text);
-        }
-
-        for (int i = 0; i < min(int(activeOpts.size()), 5); i++) {
-            optionsButtons[i].setString(activeOpts[i + listPos][0]);
-            window.draw(optionsButtons[i].box);
-            window.draw(optionsButtons[i].text);
-        }
-
-        statText[0].setString(options[selection][0] + " Level " + to_string(statVal));
-        swapSelection(options[selection][1], bodyText);
-        statText[1].setString(options[selection][1]);
-
-        for (int i = 0; i < bodyText.size(); i++) {
-            bodyText[i].setCharacterSize(20);
-            bodyText[i].setFont(font);
-            bodyText[i].setFillColor(sf::Color::Cyan);
-            temp = bodyText[i].getLocalBounds();
-            bodyText[i].setOrigin(temp.left + temp.width / 2.0f, 0);
-            bodyText[i].setPosition(400, 400 + (25 * i));
-            window.draw(bodyText[i]);
-        }
-
-
-        for (int i = 0; i < 1; i++) {
-            temp = statText[i].getLocalBounds();
-            statText[i].setOrigin(temp.left + temp.width / 2.0f, 0);
-            statText[i].setPosition(400, 370 + (30 * i));
-            window.draw(statText[i]);
-        }
-
-        window.display();
-    }
-    */
     return;
 }
 
