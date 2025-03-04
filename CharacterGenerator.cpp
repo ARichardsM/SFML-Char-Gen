@@ -101,6 +101,7 @@ void charGen::mainMenu(sf::RenderWindow& window) {
 
     vector<statBlock> abilityList;
     vector<statBlock> weaknessList;
+    vector<string> background;
 
     std::vector<string> backCate = { "Nation", "Race", "Element", "Source", "Religion" };
     std::vector<std::vector<string>> backCateOpt;
@@ -110,8 +111,6 @@ void charGen::mainMenu(sf::RenderWindow& window) {
     backCateOpt.push_back({ "Fire", "Water", "Earth", "Wind", "Ice", "Lightning", "Shadow", "Light" });
     backCateOpt.push_back({ "Faith", "Magic", "Tech", "Instinct" });
     backCateOpt.push_back({ "Mythos", "Death", "Nature", "Deception", "Fate", "Conquest", "Wilds", "Security", "Desire", "Spring", "Summer", "Fall", "Winter", "Progression", "Monsters" });
-
-    std::vector<string> returnBack;
 
     string text[] = { "Skelstaris", "Human", "Fire", "Faith", "Mythos" };
 
@@ -143,17 +142,15 @@ void charGen::mainMenu(sf::RenderWindow& window) {
                 switch (hoverVal) {
                 case 0:
                     // Start the Backgound Creator
-                    returnBack = charGen::backgroundMenu(window, backCate, backCateOpt);
-
-                    // Print the Result to the Console
-                    for (string i : returnBack)
-                        cout << i << " ";
+                    background = charGen::backgroundMenu(window, backCate, backCateOpt);
                     break;
                 case 1:
+                    // Start Stat Menu
                     charGen::statsMenu(window, abilityList, weaknessList);
                     break;
                 case 2:
-                   // printCharGen(text, abilityList, weaknessList);
+                   // Print to screen
+                    cout << charGen::output(backCate, background, abilityList, weaknessList);
                     break;
                 case 3:
                     return;
@@ -659,5 +656,134 @@ void charGen::stats::reconfigDisplay(sf::Font& font, std::vector<statBlock>& pro
 }
 
 std::string charGen::output(std::vector<std::string> cates, std::vector<std::string> background, std::vector<statBlock>& abilityList, std::vector<statBlock>& weaknessList) {
-    return NULL;
+    // Initialize Variables
+    string returnStr;
+
+    // Add background
+    if (!background.empty()) {
+        if (background.size() == cates.size())
+            for (int i = 0; i < background.size(); i++)
+                returnStr += cates[i] + ": " + background[i] + "\n";
+
+        returnStr += "\n";
+    }
+    // Add abilities
+    if (!abilityList.empty()) {
+        returnStr += "Ability List\n";
+
+        for (int i = 0; i < abilityList.size(); i++)
+            returnStr += abilityList[i].name +" [" + to_string(abilityList[i].value) + "] - " + abilityList[i].description + "\n";
+
+        returnStr += "\n";
+    }
+
+    // Add weaknesses
+    if (!weaknessList.empty()) {
+        returnStr += "Weakness List\n";
+
+        for (int i = 0; i < weaknessList.size(); i++)
+            returnStr += weaknessList[i].name + " [" + to_string(weaknessList[i].value) + "] - " + weaknessList[i].description + "\n";
+        
+        returnStr += "\n";
+    }
+    
+    // Print the Result to the Console
+    for (string i : background)
+        cout << i << " ";
+
+    return returnStr;
+    /*
+    void printCharGen(string(&text)[5], vector<vector<string>>& abilityList, vector<vector<string>>& weaknessList) {
+    ofstream file;
+    file.open("stats.txt");
+
+    int health = 20, end = 20, def = 0, dodge = 10, resolve = 10, armor = 0, initi = 0;
+    int acc = 0, melDX = 1, ranDX = 1, traDX = 1;
+
+    for (int i = 0; i < abilityList.size(); i++) {
+        if (abilityList[i][0] == "Tough") {
+            health = health + (stoi(abilityList[i][1]) + floor(stoi(abilityList[i][1]) / 5)) * 5;
+        }
+        else if (abilityList[i][0] == "Vigorous") {
+            end = end + (stoi(abilityList[i][1]) + floor(stoi(abilityList[i][1]) / 5)) * 5;
+        }
+        else if ((abilityList[i][0] == "Barrier") || (abilityList[i][0] == "Evasive")
+            || (abilityList[i][0] == "Incorporeal Form") || (abilityList[i][0] == "Teleport")) { //defense roll
+            def = max(def, stoi(abilityList[i][1]));
+        }
+        else if (abilityList[i][0] == "Quick") {
+            initi = stoi(abilityList[i][1]) * 2;
+            dodge = dodge + stoi(abilityList[i][1]);
+        }
+        else if (abilityList[i][0] == "Iron-Willed") {
+            resolve = resolve + stoi(abilityList[i][1]);
+        }
+        else if ((abilityList[i][0] == "Agile") || (abilityList[i][0] == "Combat Expert")) { //attack roll
+            acc = acc + stoi(abilityList[i][1]);
+        }
+        else if (abilityList[i][0] == "Attack") { //damage multipler
+            melDX = melDX + stoi(abilityList[i][1]);
+            ranDX = ranDX + stoi(abilityList[i][1]);
+            traDX = traDX + stoi(abilityList[i][1]);
+        }
+        else if (abilityList[i][0] == "Telekinesis") { //damage multipler
+            ranDX = ranDX + stoi(abilityList[i][1]);
+        }
+        else if (abilityList[i][0] == "Strong") { //damage multipler
+            melDX = melDX + stoi(abilityList[i][1]);
+        }
+        else if (abilityList[i][0] == "Armored") {
+            armor = stoi(abilityList[i][1]);
+        }
+    }
+
+    dodge = dodge + def;
+    resolve = resolve + def;
+
+    for (int i = 0; i < weaknessList.size(); i++) {
+        if (weaknessList[i][0] == "Frail") {
+            health = health - stoi(weaknessList[i][1]) * 5;
+        }
+        else if (weaknessList[i][0] == "Languid") {
+            end = end - stoi(weaknessList[i][1]) * 5;
+        }
+        else if ((weaknessList[i][0] == "Clumsy")) { //attack roll
+            acc = acc - stoi(weaknessList[i][1]);
+        }
+        else if ((weaknessList[i][0] == "Slow")) { //defense roll
+            dodge = dodge - stoi(weaknessList[i][1]);
+            initi = stoi(weaknessList[i][1]) * -2;
+        }
+        else if ((weaknessList[i][0] == "Weak")) { //damage multipler
+            melDX = melDX - stoi(weaknessList[i][1]);
+        }
+        else if (weaknessList[i][0] == "Weak-Willed") {
+            resolve = resolve - stoi(weaknessList[i][1]);
+        }
+    }
+
+    file << "Health: " << health << endl;
+    file << "Endurance: " << end << endl;
+    file << "Dodge: " << dodge << endl;
+    file << "Resolve: " << resolve << endl;
+    file << "Armor: " << armor << endl;
+    file << "Initiative: " << initi << endl;
+
+    file << endl << "Abilities" << endl;
+    for (int i = 0; i < abilityList.size(); i++) {
+        file << abilityList[i][0] << " " << abilityList[i][1] << endl;
+    }
+
+    file << endl << "Weaknesses" << endl;
+    for (int i = 0; i < weaknessList.size(); i++) {
+        file << weaknessList[i][0] << " " << weaknessList[i][1] << endl;
+    }
+
+    file << endl << "Attacks" << endl;
+    file << "Attack (Melee Element) - Mod: " << acc << " DMG: " << melDX << " END: 0" << endl;
+    file << "Attack (Ranged Element) - Mod: " << acc << " DMG: " << ranDX << " END: 0" << endl;
+    file << "Attack (Trap Element) - Mod: " << acc << " DMG: " << traDX << " END: 0" << endl;
+}
+    
+    */
 }
