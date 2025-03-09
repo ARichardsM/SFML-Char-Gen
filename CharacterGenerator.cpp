@@ -151,6 +151,7 @@ void charGen::mainMenu(sf::RenderWindow& window) {
                 case 2:
                    // Print to screen
                     cout << charGen::output(backCate, background, abilityList, weaknessList);
+                    cout << charGen::stat(abilityList, weaknessList);
                     break;
                 case 3:
                     return;
@@ -687,10 +688,48 @@ std::string charGen::output(std::vector<std::string> cates, std::vector<std::str
         returnStr += "\n";
     }
     
-    // Print the Result to the Console
-    for (string i : background)
-        cout << i << " ";
+    // Return the result
+    return returnStr;
+}
 
+std::string charGen::stat(std::vector<statBlock>& abilityList, std::vector<statBlock>& weaknessList) {
+    // Initialize Variables
+    string returnStr;
+    vector<int> attStat = { 0, 0 };       // To-Hit, DV
+
+    // For every ability
+    for (statBlock abil : abilityList) {
+
+        // Attack Variables
+        if ((abil.name == "Agile") || (abil.name == "Combat Expert")) {
+            attStat[0] += abil.value;
+            continue;
+        }
+        else if ((abil.name == "Strong") || (abil.name == "Attack")) {
+            attStat[1] += abil.value;
+            continue;
+        }
+    }
+
+    // For every weakness
+    for (statBlock weak : weaknessList) {
+
+
+        // Attack Variables
+        if (weak.name == "Clumsy"){
+            attStat[0] -= weak.value;
+            continue;
+        }
+        else if (weak.name == "Weak"){
+            attStat[1] -= weak.value;
+            continue;
+        }
+    }
+
+    // Add basic attack information
+    returnStr += "Attacks\nBasic - " + to_string(attStat[0]) + " To-Hit, " + to_string(attStat[1]) + " DV, 0 END";
+
+    // Return the result
     return returnStr;
     /*
     void printCharGen(string(&text)[5], vector<vector<string>>& abilityList, vector<vector<string>>& weaknessList) {
@@ -784,6 +823,6 @@ std::string charGen::output(std::vector<std::string> cates, std::vector<std::str
     file << "Attack (Ranged Element) - Mod: " << acc << " DMG: " << ranDX << " END: 0" << endl;
     file << "Attack (Trap Element) - Mod: " << acc << " DMG: " << traDX << " END: 0" << endl;
 }
-    
+
     */
 }

@@ -21,5 +21,9 @@ namespace charGen {
 		void reconfigDisplay(sf::Font& font, std::vector<statBlock>& propList, std::vector<sf::Text>& dispList);
 	}
 
+	// Return a string of character information
 	std::string output(std::vector<std::string> cates, std::vector<std::string> background, std::vector<statBlock>& abilityList, std::vector<statBlock>& weaknessList);
+
+	// Return a string derived from character information
+	std::string stat(std::vector<statBlock>& abilityList, std::vector<statBlock>& weaknessList);
 }
