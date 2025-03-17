@@ -695,134 +695,120 @@ std::string charGen::output(std::vector<std::string> cates, std::vector<std::str
 std::string charGen::stat(std::vector<statBlock>& abilityList, std::vector<statBlock>& weaknessList) {
     // Initialize Variables
     string returnStr;
-    vector<int> attStat = { 0, 0 };       // To-Hit, DV
+
+    vector<int> attStat = { 0 , 0 };         // To-Hit, DV
+    vector<int> barStat = { 20 , 20 };       // HP, END
+    vector<int> avoidStat = { 5 , 5 };       // Dodge, Resolve
+   
+    int armorStat = 0;                       // Armor
+
+
+    // Prepare a vector of stat effecting abilities
+    vector<string> statAbility;
+    statAbility.insert(statAbility.end(), { "Agile" , "Combat Expert" });
+    statAbility.insert(statAbility.end(), { "Strong" , "Attack" });
+    statAbility.insert(statAbility.end(), { "Tough" , "Vigorous" });
+    statAbility.insert(statAbility.end(), { "Evasive" , "Quick" , "Iron-Willed" });
+    statAbility.insert(statAbility.end(), { "Armored" });
+
+    // Prepare a vector of stat effecting weaknesses
+    vector<string> statWeakness;
+    statWeakness.insert(statWeakness.end(), { "Clumsy" , "Weak" });
+    statWeakness.insert(statWeakness.end(), { "Frail" , "Languid" });
+    statWeakness.insert(statWeakness.end(), { "Slow" , "Weak-Willed" });
 
     // For every ability
     for (statBlock abil : abilityList) {
+        // Find the ability
+        auto iter = find(statAbility.begin(), statAbility.end(), abil.name);
 
-        // Attack Variables
-        if ((abil.name == "Agile") || (abil.name == "Combat Expert")) {
+        // Find the ability
+        int select = -1;
+        if (iter != statAbility.end())
+            select = distance(statAbility.begin(), iter);
+        // Continue if not found
+        else
+            continue;
+
+        switch (select) {
+        case 0: // Agile
+        case 1: // Combat Expert
             attStat[0] += abil.value;
-            continue;
-        }
-        else if ((abil.name == "Strong") || (abil.name == "Attack")) {
+            break;
+        case 2: // Strong
+        case 3: // Attack
             attStat[1] += abil.value;
-            continue;
+            break;
+        case 4: // Tough
+            barStat[0] += trunc(((float)abil.value / 5.0) * 6.0) * 5.0;
+            break;
+        case 5: // Vigorous
+            barStat[1] += trunc(((float)abil.value / 5.0) * 6.0) * 5.0;
+            break;
+        case 6: // Evasive
+            avoidStat[0] += abil.value;
+            avoidStat[1] += abil.value;
+            break;
+        case 7: // Quick
+            avoidStat[0] += abil.value;
+            break;
+        case 8: // Iron-Willed
+            avoidStat[1] += abil.value;
+            break;
+        case 9: // Armored
+            armorStat += abil.value;
+            break;
         }
     }
 
     // For every weakness
     for (statBlock weak : weaknessList) {
+        // Find the ability
+        auto iter = find(statWeakness.begin(), statWeakness.end(), weak.name);
 
+        // Find the ability
+        int select = -1;
+        if (iter != statWeakness.end())
+            select = distance(statWeakness.begin(), iter);
+        // Continue if not found
+        else
+            continue;
 
-        // Attack Variables
-        if (weak.name == "Clumsy"){
+        switch (select) {
+        case 0: // Clumsy
             attStat[0] -= weak.value;
-            continue;
-        }
-        else if (weak.name == "Weak"){
+            break;
+        case 1: // Weak
             attStat[1] -= weak.value;
-            continue;
+            break;
+        case 2: // Frail
+            barStat[0] -= weak.value * 5.0;
+            break;
+        case 3: // Languid
+            barStat[1] -= weak.value * 5.0;
+            attStat[1] += weak.value;
+            break;
+        case 4: // Slow
+            avoidStat[0] -= weak.value;
+            break;
+        case 5: // Weak-Willed
+            avoidStat[1] -= weak.value;
+            break;
         }
     }
+
+    // Add bar stat information
+    returnStr += "Health: " + to_string(barStat[0]) + ", End: " + to_string(barStat[1]) + " \n";
+
+    // Add avoid stat information
+    returnStr += "Dodge: " + to_string(avoidStat[0]) + ", Resolve: " + to_string(avoidStat[1]) + " \n";
+
+    // Add block stat information
+    returnStr += "Armor: " + to_string(armorStat) + " \n\n";
 
     // Add basic attack information
     returnStr += "Attacks\nBasic - " + to_string(attStat[0]) + " To-Hit, " + to_string(attStat[1]) + " DV, 0 END";
 
     // Return the result
     return returnStr;
-    /*
-    void printCharGen(string(&text)[5], vector<vector<string>>& abilityList, vector<vector<string>>& weaknessList) {
-    ofstream file;
-    file.open("stats.txt");
-
-    int health = 20, end = 20, def = 0, dodge = 10, resolve = 10, armor = 0, initi = 0;
-    int acc = 0, melDX = 1, ranDX = 1, traDX = 1;
-
-    for (int i = 0; i < abilityList.size(); i++) {
-        if (abilityList[i][0] == "Tough") {
-            health = health + (stoi(abilityList[i][1]) + floor(stoi(abilityList[i][1]) / 5)) * 5;
-        }
-        else if (abilityList[i][0] == "Vigorous") {
-            end = end + (stoi(abilityList[i][1]) + floor(stoi(abilityList[i][1]) / 5)) * 5;
-        }
-        else if ((abilityList[i][0] == "Barrier") || (abilityList[i][0] == "Evasive")
-            || (abilityList[i][0] == "Incorporeal Form") || (abilityList[i][0] == "Teleport")) { //defense roll
-            def = max(def, stoi(abilityList[i][1]));
-        }
-        else if (abilityList[i][0] == "Quick") {
-            initi = stoi(abilityList[i][1]) * 2;
-            dodge = dodge + stoi(abilityList[i][1]);
-        }
-        else if (abilityList[i][0] == "Iron-Willed") {
-            resolve = resolve + stoi(abilityList[i][1]);
-        }
-        else if ((abilityList[i][0] == "Agile") || (abilityList[i][0] == "Combat Expert")) { //attack roll
-            acc = acc + stoi(abilityList[i][1]);
-        }
-        else if (abilityList[i][0] == "Attack") { //damage multipler
-            melDX = melDX + stoi(abilityList[i][1]);
-            ranDX = ranDX + stoi(abilityList[i][1]);
-            traDX = traDX + stoi(abilityList[i][1]);
-        }
-        else if (abilityList[i][0] == "Telekinesis") { //damage multipler
-            ranDX = ranDX + stoi(abilityList[i][1]);
-        }
-        else if (abilityList[i][0] == "Strong") { //damage multipler
-            melDX = melDX + stoi(abilityList[i][1]);
-        }
-        else if (abilityList[i][0] == "Armored") {
-            armor = stoi(abilityList[i][1]);
-        }
-    }
-
-    dodge = dodge + def;
-    resolve = resolve + def;
-
-    for (int i = 0; i < weaknessList.size(); i++) {
-        if (weaknessList[i][0] == "Frail") {
-            health = health - stoi(weaknessList[i][1]) * 5;
-        }
-        else if (weaknessList[i][0] == "Languid") {
-            end = end - stoi(weaknessList[i][1]) * 5;
-        }
-        else if ((weaknessList[i][0] == "Clumsy")) { //attack roll
-            acc = acc - stoi(weaknessList[i][1]);
-        }
-        else if ((weaknessList[i][0] == "Slow")) { //defense roll
-            dodge = dodge - stoi(weaknessList[i][1]);
-            initi = stoi(weaknessList[i][1]) * -2;
-        }
-        else if ((weaknessList[i][0] == "Weak")) { //damage multipler
-            melDX = melDX - stoi(weaknessList[i][1]);
-        }
-        else if (weaknessList[i][0] == "Weak-Willed") {
-            resolve = resolve - stoi(weaknessList[i][1]);
-        }
-    }
-
-    file << "Health: " << health << endl;
-    file << "Endurance: " << end << endl;
-    file << "Dodge: " << dodge << endl;
-    file << "Resolve: " << resolve << endl;
-    file << "Armor: " << armor << endl;
-    file << "Initiative: " << initi << endl;
-
-    file << endl << "Abilities" << endl;
-    for (int i = 0; i < abilityList.size(); i++) {
-        file << abilityList[i][0] << " " << abilityList[i][1] << endl;
-    }
-
-    file << endl << "Weaknesses" << endl;
-    for (int i = 0; i < weaknessList.size(); i++) {
-        file << weaknessList[i][0] << " " << weaknessList[i][1] << endl;
-    }
-
-    file << endl << "Attacks" << endl;
-    file << "Attack (Melee Element) - Mod: " << acc << " DMG: " << melDX << " END: 0" << endl;
-    file << "Attack (Ranged Element) - Mod: " << acc << " DMG: " << ranDX << " END: 0" << endl;
-    file << "Attack (Trap Element) - Mod: " << acc << " DMG: " << traDX << " END: 0" << endl;
-}
-
-    */
 }
