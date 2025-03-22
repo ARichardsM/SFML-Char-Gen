@@ -2,126 +2,34 @@
 
 using namespace std;
 
-void printCharGen(string(&text)[5], vector<vector<string>>& abilityList, vector<vector<string>>& weaknessList) {
-    ofstream file;
-    file.open("stats.txt");
-
-    int health = 20, end = 20, def = 0, dodge = 10, resolve = 10, armor = 0, initi = 0;
-    int acc = 0, melDX = 1, ranDX = 1, traDX = 1;
-
-    for (int i = 0; i < abilityList.size(); i++) {
-        if (abilityList[i][0] == "Tough") {
-            health = health + (stoi(abilityList[i][1]) + floor(stoi(abilityList[i][1]) / 5)) * 5;
-        }
-        else if (abilityList[i][0] == "Vigorous") {
-            end = end + (stoi(abilityList[i][1]) + floor(stoi(abilityList[i][1]) / 5)) * 5;
-        }
-        else if ((abilityList[i][0] == "Barrier") || (abilityList[i][0] == "Evasive")
-            || (abilityList[i][0] == "Incorporeal Form") || (abilityList[i][0] == "Teleport")) { //defense roll
-            def = max(def, stoi(abilityList[i][1]));
-        }
-        else if (abilityList[i][0] == "Quick") {
-            initi = stoi(abilityList[i][1]) * 2;
-            dodge = dodge + stoi(abilityList[i][1]);
-        }
-        else if (abilityList[i][0] == "Iron-Willed") {
-            resolve = resolve + stoi(abilityList[i][1]);
-        }
-        else if ((abilityList[i][0] == "Agile") || (abilityList[i][0] == "Combat Expert")) { //attack roll
-            acc = acc + stoi(abilityList[i][1]);
-        }
-        else if (abilityList[i][0] == "Attack") { //damage multipler
-            melDX = melDX + stoi(abilityList[i][1]);
-            ranDX = ranDX + stoi(abilityList[i][1]);
-            traDX = traDX + stoi(abilityList[i][1]);
-        }
-        else if (abilityList[i][0] == "Telekinesis") { //damage multipler
-            ranDX = ranDX + stoi(abilityList[i][1]);
-        }
-        else if (abilityList[i][0] == "Strong") { //damage multipler
-            melDX = melDX + stoi(abilityList[i][1]);
-        }
-        else if (abilityList[i][0] == "Armored") {
-            armor = stoi(abilityList[i][1]);
-        }
-    }
-
-    dodge = dodge + def;
-    resolve = resolve + def;
-
-    for (int i = 0; i < weaknessList.size(); i++) {
-        if (weaknessList[i][0] == "Frail") {
-            health = health - stoi(weaknessList[i][1]) * 5;
-        }
-        else if (weaknessList[i][0] == "Languid") {
-            end = end - stoi(weaknessList[i][1]) * 5;
-        }
-        else if ((weaknessList[i][0] == "Clumsy")) { //attack roll
-            acc = acc - stoi(weaknessList[i][1]);
-        }
-        else if ((weaknessList[i][0] == "Slow")) { //defense roll
-            dodge = dodge - stoi(weaknessList[i][1]);
-            initi = stoi(weaknessList[i][1]) * -2;
-        }
-        else if ((weaknessList[i][0] == "Weak")) { //damage multipler
-            melDX = melDX - stoi(weaknessList[i][1]);
-        }
-        else if (weaknessList[i][0] == "Weak-Willed") {
-            resolve = resolve - stoi(weaknessList[i][1]);
-        }
-    }
-
-    file << "Health: " << health << endl;
-    file << "Endurance: " << end << endl;
-    file << "Dodge: " << dodge << endl;
-    file << "Resolve: " << resolve << endl;
-    file << "Armor: " << armor << endl;
-    file << "Initiative: " << initi << endl;
-
-    file << endl << "Abilities" << endl;
-    for (int i = 0; i < abilityList.size(); i++) {
-        file << abilityList[i][0] << " " << abilityList[i][1] << endl;
-    }
-
-    file << endl << "Weaknesses" << endl;
-    for (int i = 0; i < weaknessList.size(); i++) {
-        file << weaknessList[i][0] << " " << weaknessList[i][1] << endl;
-    }
-
-    file << endl << "Attacks" << endl;
-    file << "Attack (Melee Element) - Mod: " << acc << " DMG: " << melDX << " END: 0" << endl;
-    file << "Attack (Ranged Element) - Mod: " << acc << " DMG: " << ranDX << " END: 0" << endl;
-    file << "Attack (Trap Element) - Mod: " << acc << " DMG: " << traDX << " END: 0" << endl;
-}
-
 void charGen::mainMenu(sf::RenderWindow& window) {
+    // Prepare variables
     sf::Vector2<int> mousePos;
-    sf::CircleShape shape(100.f);
-    sf::Font font;
+    sf::Font font; 
+    sf::Text title;
+    sf::Event event;
+    int hoverVal;
 
     vector<statBlock> abilityList;
     vector<statBlock> weaknessList;
     vector<string> background;
-
-    std::vector<string> backCate = { "Nation", "Race", "Element", "Source", "Religion" };
     std::vector<std::vector<string>> backCateOpt;
 
+    std::vector<string> backCate = { "Nation", "Race", "Element", "Source", "Religion" };
+
+    Menu newMenu(400, 400, 200, 600, { "Background", "Stats", "Print", "Exit" });
+
+    // Add background options
     backCateOpt.push_back({ "Skelstaris", "Blaycorrum", "Arim", "Native" });
     backCateOpt.push_back({ "Human", "Halfling", "Goliath" });
     backCateOpt.push_back({ "Fire", "Water", "Earth", "Wind", "Ice", "Lightning", "Shadow", "Light" });
     backCateOpt.push_back({ "Faith", "Magic", "Tech", "Instinct" });
     backCateOpt.push_back({ "Mythos", "Death", "Nature", "Deception", "Fate", "Conquest", "Wilds", "Security", "Desire", "Spring", "Summer", "Fall", "Winter", "Progression", "Monsters" });
 
-    string text[] = { "Skelstaris", "Human", "Fire", "Faith", "Mythos" };
-
-    Menu newMenu(400, 400, 200, 600, { "Background", "Stats", "Print", "Exit" });
-
-    shape.setFillColor(sf::Color::Green);
-    
+    // Set Font
     font.loadFromFile("font/arial.ttf");
 
-    sf::Text title;
-
+    // Prepare title
     title.setString("Character Maker Main Menu");
     title.setCharacterSize(37);
     title.setFont(font);
@@ -129,12 +37,13 @@ void charGen::mainMenu(sf::RenderWindow& window) {
 
     while (window.isOpen())
     {
+        // Determine mouse position
         mousePos = sf::Mouse::getPosition(window);
-        sf::Event event;
-        int hoverVal = newMenu.hover(mousePos);
+        hoverVal = newMenu.hover(mousePos);
 
         while (window.pollEvent(event))
         {
+            // Close Window on Close
             if (event.type == sf::Event::Closed)
                 window.close();
 
@@ -154,6 +63,7 @@ void charGen::mainMenu(sf::RenderWindow& window) {
                     cout << charGen::stat(abilityList, weaknessList);
                     break;
                 case 3:
+                    // Exit
                     return;
                     break;
                 }
@@ -161,11 +71,8 @@ void charGen::mainMenu(sf::RenderWindow& window) {
 
         // Draw the window
         window.clear();
-        //window.draw(shape);
         window.draw(title);
-
         newMenu.draw(window);
-
         window.display();
     }
 }

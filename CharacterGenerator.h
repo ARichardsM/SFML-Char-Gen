@@ -9,12 +9,17 @@ namespace charGen {
 		int value;	
 	};
 
+	// Main Menu of the character generator
 	void mainMenu(sf::RenderWindow& window);
+	// Background menu
 	std::vector<std::string> backgroundMenu(sf::RenderWindow& window, std::vector<std::string> cates, std::vector<std::vector<std::string>> cateOpts);
+	// Character stat menu
 	void statsMenu(sf::RenderWindow& window, std::vector<statBlock>& abilityList, std::vector<statBlock>& weaknessList);
 
 	namespace stats {
+		// Add stat menu
 		void addMenu(sf::RenderWindow& window, std::vector<statBlock>& propList, const bool& forAbility);
+		// Adjust stat menu
 		void adjustMenu(sf::RenderWindow& window, std::vector<statBlock>& propList);
 
 		// Adjust a display text list based on a statBlock list

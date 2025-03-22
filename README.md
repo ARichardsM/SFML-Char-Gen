@@ -17,10 +17,7 @@ The project serves as both a functional toolkit and an exercise in GUI design an
 | CharacterGenerator.cpp    | Contains scripts for entity generation.                                                    |
 
 # Current Objectives
- - [ ] Refactor the *Character Generator* module.
+ - [X] Refactor the *Character Generator* module.
 
 # Future Goals
 - [ ] Refactor the *Bond Tracker* module.
-
-# To Be Decided (TBD)
-- [ ] Pending additional features and priorities.

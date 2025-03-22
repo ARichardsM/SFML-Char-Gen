@@ -16,7 +16,7 @@
 using namespace std;
 
 // Global Variables
-string version = "0.1.4";   // Current version number
+string version = "0.1.38";   // Current version number
 
 void mainMenu(sf::RenderWindow& window) {
     sf::Vector2<int> mousePos;
