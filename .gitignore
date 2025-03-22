@@ -12,6 +12,4 @@ TabletopSF.vcxproj.user
 bonds.txt
 bondsIn.txt
 stats.txt
-BondTracker.cpp
-BondTracker.h
 /Resources
