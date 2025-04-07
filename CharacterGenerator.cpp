@@ -19,12 +19,37 @@ void charGen::mainMenu(sf::RenderWindow& window) {
 
     Menu newMenu(400, 400, 200, 600, { "Background", "Stats", "Print", "Exit" });
 
-    // Add background options
-    backCateOpt.push_back({ "Skelstaris", "Blaycorrum", "Arim", "Native" });
-    backCateOpt.push_back({ "Human", "Halfling", "Goliath" });
-    backCateOpt.push_back({ "Fire", "Water", "Earth", "Wind", "Ice", "Lightning", "Shadow", "Light" });
-    backCateOpt.push_back({ "Faith", "Magic", "Tech", "Instinct" });
-    backCateOpt.push_back({ "Mythos", "Death", "Nature", "Deception", "Fate", "Conquest", "Wilds", "Security", "Desire", "Spring", "Summer", "Fall", "Winter", "Progression", "Monsters" });
+    // For each background category
+    for (const string& dir : backCate){
+        // Prepare the directory path
+        std::filesystem::path dirPath = std::filesystem::current_path() / dir;
+
+        // Verify directory exists
+        if (!(exists(dirPath) && is_directory(dirPath))) {
+            // Report missing directory and exit 
+            cout << dir + " Directory not found." << endl;
+            return;
+        }
+
+        // Prepare temporary variable
+        std::vector<string> backOpts;
+        std::string fileName;
+
+        // For each entry in the directory 
+        for (const auto& entry : std::filesystem::directory_iterator(dirPath)) {
+            // If the current file is a png
+            if (entry.path().extension() == ".png")
+                // Record the filename
+                fileName = entry.path().stem().string();
+            // If the current file is a txt and the name matches the last png
+            else if ((entry.path().extension() == ".txt") && (fileName == entry.path().stem().string()))
+                // Add as a background option
+                backOpts.push_back(fileName);
+        }
+
+        // Add background options
+        backCateOpt.push_back(backOpts);
+    }
 
     // Set Font
     font.loadFromFile("font/arial.ttf");

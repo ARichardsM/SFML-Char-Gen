@@ -1,7 +1,6 @@
 # Overview
-This repository contains the SFML Tabletop Scripts, a collection of tools aimed at simplifying entity creation and connection tracking.
+This repository contains the SFML Character Generator, a project aimed at simplifying entity creation.
 The project serves as both a functional toolkit and an exercise in GUI design and the SFML API library.
-
 
 | File Name                 | Description                                                                                |
 |---------------------------|--------------------------------------------------------------------------------------------|
@@ -10,14 +9,17 @@ The project serves as both a functional toolkit and an exercise in GUI design an
 | Support.h                 | Headers for *Support.cpp*.                                                                 |
 | Support.cpp               | Includes reusable and modular utility functions.                                           |
 |---------------------------|--------------------------------------------------------------------------------------------|
-| BondTracker.h             | Headers for *BondTracker.cpp*.                                                             |
-| BondTracker.cpp           | Contains scripts that handles connections between entities.                                |
-|---------------------------|--------------------------------------------------------------------------------------------|
 | CharacterGenerator.h      | Headers for *CharacterGenerator.cpp*.                                                      |
 | CharacterGenerator.cpp    | Contains scripts for entity generation.                                                    |
 
-# Current Objectives
- - [X] Refactor the *Character Generator* module.
-
-# Future Goals
-- [ ] Refactor the *Bond Tracker* module.
+# File System
+- Font (Folder)
+- Element (Folder)
+- Nation (Folder)
+- Race (Folder)
+- Religion (Folder)
+- Source (Folder)
+- Stats (Folder)
+	- Abilities.txt
+	- Weaknesses.txt
+- Executable
